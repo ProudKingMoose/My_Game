@@ -31,10 +31,15 @@ public class HeroStatemachine : MonoBehaviour
     private bool alive = true;
     private bool actionStarted = false;
 
+    private HeroPanelStats Stats;
+    public GameObject HeroPanel;
+
     void Start()
     {
         coldownLimit = 4;
         currentColdown = 0;
+
+        CreateHeroPanel();
 
         Selector.SetActive(false);
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
@@ -142,6 +147,24 @@ public class HeroStatemachine : MonoBehaviour
     {
         hero.currentHP -= damageAmount;
         if (hero.currentHP < 0)
+        {
+            hero.currentHP = 0;
             currentstate = States.DEAD;
+        }
+    }
+
+    void CreateHeroPanel()
+    {
+        HeroPanel = Instantiate(HeroPanel) as GameObject;
+        Stats = HeroPanel.GetComponent<HeroPanelStats>();
+        Stats.HeroName.text = hero.theName;
+        Stats.HeroEP.text = "Energy: " + hero.currentEnergy + "/" + hero.baseEnergy;
+        Stats.HeroHP.text = "Health: " + hero.currentHP + "/" + hero.baseHP;
+        
+    }
+    void HeroPanelUpdate()
+    {
+        Stats.HeroEP.text = "Energy: " + hero.currentEnergy + "/" + hero.baseEnergy;
+        Stats.HeroHP.text = "Health: " + hero.currentHP + "/" + hero.baseHP; ;
     }
 }

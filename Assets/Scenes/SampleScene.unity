@@ -2746,6 +2746,8 @@ MonoBehaviour:
   currentstate: 0
   Selector: {fileID: 1035443731}
   EnemyTargeted: {fileID: 0}
+  HeroPanel: {fileID: 5852800188513735306, guid: 761229d0c1bfaa94292fbfbda4287ccb,
+    type: 3}
 --- !u!65 &2037970516
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2886,6 +2888,8 @@ MonoBehaviour:
   currentstate: 0
   Selector: {fileID: 1922510134}
   EnemyTargeted: {fileID: 0}
+  HeroPanel: {fileID: 5852800188513735306, guid: 761229d0c1bfaa94292fbfbda4287ccb,
+    type: 3}
 --- !u!65 &2100537957
 BoxCollider:
   m_ObjectHideFlags: 0
