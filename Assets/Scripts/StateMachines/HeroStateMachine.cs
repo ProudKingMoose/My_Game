@@ -32,6 +32,7 @@ public class HeroStatemachine : MonoBehaviour
     private bool actionStarted = false;
 
     private HeroPanelStats Stats;
+    private Transform HeroPanelSpacer;
     public GameObject HeroPanel;
 
     void Start()
@@ -39,6 +40,7 @@ public class HeroStatemachine : MonoBehaviour
         coldownLimit = 4;
         currentColdown = 0;
 
+        HeroPanelSpacer = GameObject.Find("Battle UI").transform.Find("HeroPanel").transform.Find("HeroPanelSpacer");
         CreateHeroPanel();
 
         Selector.SetActive(false);
@@ -151,6 +153,7 @@ public class HeroStatemachine : MonoBehaviour
             hero.currentHP = 0;
             currentstate = States.DEAD;
         }
+        HeroPanelUpdate();
     }
 
     void CreateHeroPanel()
@@ -158,13 +161,15 @@ public class HeroStatemachine : MonoBehaviour
         HeroPanel = Instantiate(HeroPanel) as GameObject;
         Stats = HeroPanel.GetComponent<HeroPanelStats>();
         Stats.HeroName.text = hero.theName;
-        Stats.HeroEP.text = "Energy: " + hero.currentEnergy + "/" + hero.baseEnergy;
         Stats.HeroHP.text = "Health: " + hero.currentHP + "/" + hero.baseHP;
-        
+        Debug.Log(Stats.HeroHP.text);
+        Stats.HeroEP.text = "Energy: " + hero.currentEnergy + "/" + hero.baseEnergy;
+
+        HeroPanel.transform.SetParent(HeroPanelSpacer, false);
     }
     void HeroPanelUpdate()
     {
+        Stats.HeroHP.text = "Health: " + hero.currentHP + "/" + hero.baseHP;
         Stats.HeroEP.text = "Energy: " + hero.currentEnergy + "/" + hero.baseEnergy;
-        Stats.HeroHP.text = "Health: " + hero.currentHP + "/" + hero.baseHP; ;
     }
 }
