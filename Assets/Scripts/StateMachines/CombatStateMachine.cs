@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CombatStateMachine : MonoBehaviour
 {
@@ -38,7 +39,14 @@ public class CombatStateMachine : MonoBehaviour
     public List <GameObject> HerosReadyToAttack = new List<GameObject>();
     private TurnHandler ChoisefromHero;
 
-    public GameObject AttackPanel;
+    public GameObject ActionPanel;
+    public GameObject EnergyPanel;
+
+    public Transform ActionSpacer;
+    public Transform EnergySpacer;
+    public GameObject ActionButton;
+    private List<GameObject> aButtons = new List<GameObject>();
+
 
     void Start()
     {
@@ -48,7 +56,8 @@ public class CombatStateMachine : MonoBehaviour
         Heroes.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
 
         HeroInput = HeroGUI.ACTIVATE;
-        AttackPanel.SetActive (false);
+        ActionPanel.SetActive (false);
+        EnergyPanel.SetActive (false);
     }
 
     // Update is called once per frame
@@ -102,10 +111,12 @@ public class CombatStateMachine : MonoBehaviour
             case (HeroGUI.ACTIVATE):
                 if (HerosReadyToAttack.Count > 0)
                 {
+
                     HerosReadyToAttack[0].transform.Find("Selector").gameObject.SetActive (true);
                     ChoisefromHero = new TurnHandler ();
 
-                    AttackPanel.SetActive(true);
+                    ActionPanel.SetActive(true);
+                    CreateAttackButtons();
                     HeroInput = HeroGUI.WAITING;
                 }
             break;
@@ -132,7 +143,7 @@ public class CombatStateMachine : MonoBehaviour
         ChoisefromHero.Type = "Hero";
 
         selectEnemy = true;
-        AttackPanel.SetActive (false);
+        ActionPanel.SetActive (false);
     }
 
     //The Script For Selecting A Enemy
@@ -145,6 +156,11 @@ public class CombatStateMachine : MonoBehaviour
 
     void HeroInputDone()
     {
+        foreach (GameObject aButton in aButtons)
+        {
+            Destroy(aButton);
+        }
+
         HerosReadyToAttack[0].transform.Find("Selector").gameObject.SetActive(false);
         HandlerList.Add(ChoisefromHero);
         HerosReadyToAttack.RemoveAt(0);
@@ -182,6 +198,23 @@ public class CombatStateMachine : MonoBehaviour
                 Input2(selectedObject);
             }
         }
+    }
+
+    void CreateAttackButtons()
+    {
+        GameObject AttackButton = Instantiate(ActionButton) as GameObject;
+        Text AttackButtonText = AttackButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        AttackButtonText.text = "Attack";
+        AttackButton.GetComponent<Button>().onClick.AddListener(() => Input1());
+        AttackButton.transform.SetParent(ActionSpacer, false);
+        aButtons.Add(AttackButton);
+
+        GameObject EnergyAttackButton = Instantiate(ActionButton) as GameObject;
+        Text EnergyAttackButtonText = EnergyAttackButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        EnergyAttackButtonText.text = "EP Attack";
+        //Make new input for energy based attacks
+        EnergyAttackButton.transform.SetParent(ActionSpacer, false);
+        aButtons.Add(EnergyAttackButton);
     }
 }
 

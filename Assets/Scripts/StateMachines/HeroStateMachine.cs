@@ -85,7 +85,7 @@ public class HeroStatemachine : MonoBehaviour
 
                     Selector.SetActive(false);
 
-                    CSM.AttackPanel.SetActive(false);
+                    CSM.ActionPanel.SetActive(false);
 
                     for (int i = 0; i < CSM.HandlerList.Count; i++)
                     {
