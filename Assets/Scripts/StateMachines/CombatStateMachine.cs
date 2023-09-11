@@ -45,6 +45,7 @@ public class CombatStateMachine : MonoBehaviour
     public Transform ActionSpacer;
     public Transform EnergySpacer;
     public GameObject ActionButton;
+    public GameObject energyButton;
     private List<GameObject> aButtons = new List<GameObject>();
 
 
@@ -212,9 +213,44 @@ public class CombatStateMachine : MonoBehaviour
         GameObject EnergyAttackButton = Instantiate(ActionButton) as GameObject;
         Text EnergyAttackButtonText = EnergyAttackButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
         EnergyAttackButtonText.text = "EP Attack";
-        //Make new input for energy based attacks
+        EnergyAttackButton.GetComponent<Button>().onClick.AddListener(() => Input4());
         EnergyAttackButton.transform.SetParent(ActionSpacer, false);
         aButtons.Add(EnergyAttackButton);
+
+        if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.EnergyAttacks.Count > 0)
+        {
+            foreach (BaseAttack energyAbility in HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.EnergyAttacks)
+            {
+                GameObject EnergyButton = Instantiate(this.energyButton) as GameObject;
+                Text EnergyButtonText = EnergyButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+                EnergyButtonText.text = energyAbility.name;
+                ActionButton AB = EnergyButton.GetComponent<ActionButton>();
+                AB.AbilityToPerform = energyAbility;
+                EnergyButton.transform.SetParent(EnergySpacer, false);
+                aButtons.Add(EnergyButton);
+            }
+        }
+        else
+        {
+            EnergyAttackButton.GetComponent<Button>().interactable = false;
+        }
+    }
+
+    public void Input3(BaseAttack choosenAbility)
+    {
+        ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
+        ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
+        ChoisefromHero.Type = "Hero";
+
+        selectEnemy = true;
+        ChoisefromHero.choosenAttack = choosenAbility;
+        EnergyPanel.SetActive(false);
+    }
+
+    public void Input4()
+    {
+        ActionPanel.SetActive(false);
+        EnergyPanel.SetActive(true);
     }
 }
 

@@ -10,4 +10,6 @@ public class BaseHero: BaseClass
     public int armour;
     public int elementDefence;
     public int elementCombinationPower;
+
+    public List<BaseAttack> EnergyAttacks = new List<BaseAttack>();
 }
