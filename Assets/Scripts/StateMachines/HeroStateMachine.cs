@@ -124,6 +124,8 @@ public class HeroStatemachine : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
+        DoDamage();
+
         Vector3 startPos = startPosition;
         while (MoveToStartPos(startPos)) { yield return null; }
 
@@ -153,6 +155,13 @@ public class HeroStatemachine : MonoBehaviour
             hero.currentHP = 0;
             currentstate = States.DEAD;
         }
+        HeroPanelUpdate();
+    }
+    void DoDamage()
+    {
+        float calculatedDamage = hero.currentAttackPower + CSM.HandlerList[0].choosenAttack.attackDamage;
+        EnemyTargeted.GetComponent<EnemyStateMachine>().TakeDamage(calculatedDamage);
+        hero.currentEnergy -= CSM.HandlerList[0].choosenAttack.energyCost;
         HeroPanelUpdate();
     }
 

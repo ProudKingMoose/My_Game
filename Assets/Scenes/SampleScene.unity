@@ -1487,7 +1487,8 @@ MonoBehaviour:
     currentDefence: 0
     baseAttackPower: 0
     currentAttackPower: 0
-    aviableAttacks: []
+    aviableAttacks:
+    - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
     strength: 10
     energyPower: 10
     armour: 0
@@ -1707,7 +1708,8 @@ MonoBehaviour:
     currentDefence: 0
     baseAttackPower: 0
     currentAttackPower: 0
-    aviableAttacks: []
+    aviableAttacks:
+    - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
     strength: 10
     energyPower: 10
     armour: 0

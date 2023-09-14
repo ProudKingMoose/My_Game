@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EnemyStateMachine : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class EnemyStateMachine : MonoBehaviour
 
 
     private float chosenAttackDamage;
+
+    private bool alive;
     
     void Start()
     {
@@ -42,6 +45,7 @@ public class EnemyStateMachine : MonoBehaviour
         currentstate = States.PROCESSING;
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
         startPosition = transform.position;
+        alive = true;
     }
 
     // Update is called once per frame
@@ -67,7 +71,30 @@ public class EnemyStateMachine : MonoBehaviour
                 break;
 
             case (States.DEAD):
+                if (!alive)
+                {
+                    return;
+                }
+                else
+                {
+                    this.gameObject.tag = "DeadEnemy";
 
+                    CSM.Enemies.Remove(this.gameObject);
+
+                    Selector.SetActive(false);
+
+                    CSM.ActionPanel.SetActive(false);
+
+                    for (int i = 0; i < CSM.HandlerList.Count; i++)
+                    {
+                        if (CSM.HandlerList[i].AttackersGameObject == this.gameObject)
+                            CSM.HandlerList.Remove(CSM.HandlerList[i]);
+                    }
+
+                    this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
+
+                    alive = false;
+                }
                 break;
         }
     }
@@ -133,6 +160,15 @@ public class EnemyStateMachine : MonoBehaviour
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
     }
 
+    public void TakeDamage(float damageAmount)
+    {
+        enemy.currentHP -= damageAmount;
+        if (enemy.currentHP < 0)
+        {
+            enemy.currentHP = 0;
+            currentstate = States.DEAD;
+        }
+    }
     void DoDamage()
     {
         float calculatedDamage = enemy.currentAttackPower + chosenAttackDamage;

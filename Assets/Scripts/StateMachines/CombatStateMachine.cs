@@ -142,7 +142,7 @@ public class CombatStateMachine : MonoBehaviour
         ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
         ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
         ChoisefromHero.Type = "Hero";
-
+        ChoisefromHero.choosenAttack = HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.aviableAttacks[0];
         selectEnemy = true;
         ActionPanel.SetActive (false);
     }
@@ -177,13 +177,16 @@ public class CombatStateMachine : MonoBehaviour
         {
             GameObject curHoveredObject = hit.collider.gameObject;
 
-            curHoveredObject.transform.Find("Selector").gameObject.SetActive(true);
-
-            if (curHoveredObject != hoveredObject)
+            if (curHoveredObject.tag != "DeadEnemy")
             {
-                curHoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+                curHoveredObject.transform.Find("Selector").gameObject.SetActive(true);
+
+                if (curHoveredObject != hoveredObject)
+                {
+                    curHoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+                }
+                hoveredObject = curHoveredObject;
             }
-            hoveredObject = curHoveredObject;
         }
         else if (hoveredObject != null)
             hoveredObject.transform.Find("Selector").gameObject.SetActive(false);
@@ -191,12 +194,15 @@ public class CombatStateMachine : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+            if (hoveredObject.tag != "DeadEnemy")
             {
-                selectEnemy = false;
-                selectedObject = hit.collider.gameObject;
-                selectedObject.transform.Find("Selector").gameObject.SetActive(false);
-                Input2(selectedObject);
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+                {
+                    selectEnemy = false;
+                    selectedObject = hit.collider.gameObject;
+                    selectedObject.transform.Find("Selector").gameObject.SetActive(false);
+                    Input2(selectedObject);
+                }
             }
         }
     }
