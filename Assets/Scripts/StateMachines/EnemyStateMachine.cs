@@ -34,7 +34,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private float chosenAttackDamage;
 
-    private bool alive;
+    private bool alive = true;
     
     void Start()
     {
@@ -94,6 +94,8 @@ public class EnemyStateMachine : MonoBehaviour
                     this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
 
                     alive = false;
+
+                    CSM.battleState = CombatStateMachine.Action.ALIVECONTROL;
                 }
                 break;
         }

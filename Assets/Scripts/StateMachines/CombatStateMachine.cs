@@ -11,6 +11,9 @@ public class CombatStateMachine : MonoBehaviour
         WAIT,
         INPUTACTION,
         PERFORMACTION,
+        ALIVECONTROL,
+        WIN,
+        LOSE
     }
 
     public Action battleState;
@@ -105,6 +108,32 @@ public class CombatStateMachine : MonoBehaviour
             case (Action.PERFORMACTION):
 
             break;
+            case (Action.ALIVECONTROL):
+                if (Heroes.Count < 1)
+                {
+                    battleState = Action.LOSE;
+                }
+                else if (Enemies.Count < 1)
+                {
+                    battleState = Action.WIN;
+                }
+                else
+                {
+                    ClearAttackPanel();
+                    HeroInput = HeroGUI.ACTIVATE;
+                }
+            break;
+
+            case (Action.LOSE):
+                Debug.Log("YOU LOSE");
+            break;
+            case (Action.WIN):
+                Debug.Log("YOU WIN");
+                for (int i = 0; i < Heroes.Count; i++)
+                {
+                    Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
+                }
+            break;
         }
 
         switch (HeroInput)
@@ -157,15 +186,22 @@ public class CombatStateMachine : MonoBehaviour
 
     void HeroInputDone()
     {
-        foreach (GameObject aButton in aButtons)
-        {
-            Destroy(aButton);
-        }
+        ClearAttackPanel();
 
         HerosReadyToAttack[0].transform.Find("Selector").gameObject.SetActive(false);
         HandlerList.Add(ChoisefromHero);
         HerosReadyToAttack.RemoveAt(0);
         HeroInput = HeroGUI.ACTIVATE;
+    }
+
+    void ClearAttackPanel()
+    {
+        ActionPanel.SetActive(false);
+        EnergyPanel.SetActive(false);
+        foreach (GameObject aButton in aButtons)
+        {
+            Destroy(aButton);
+        }
     }
 
     private void HandleMouseClick()

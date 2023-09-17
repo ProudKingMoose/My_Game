@@ -95,6 +95,7 @@ public class HeroStatemachine : MonoBehaviour
 
                     this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
 
+                    CSM.battleState = CombatStateMachine.Action.ALIVECONTROL;
                     alive = false;
                 }
             break;
@@ -131,11 +132,19 @@ public class HeroStatemachine : MonoBehaviour
 
         CSM.HandlerList.RemoveAt(0);
 
-        CSM.battleState = CombatStateMachine.Action.WAIT;
+        if(CSM.battleState != CombatStateMachine.Action.WIN && CSM.battleState != CombatStateMachine.Action.LOSE)
+        {
+            CSM.battleState = CombatStateMachine.Action.WAIT;
+
+            currentColdown = 0;
+            currentstate = States.PROCESSING;
+        }
+        else
+        {
+            currentstate = States.WAITING;
+        }
 
         actionStarted = false;
-        currentColdown = 0;
-        currentstate = States.PROCESSING;
     }
 
     private bool MoveToEnemy(Vector3 target)
