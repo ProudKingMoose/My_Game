@@ -10,7 +10,7 @@ public class MovementScript : MonoBehaviour
     float horizontal;
     float vertical;
 
-    public Transform rotation;
+    public Transform orientation;
 
     Vector3 movementDirection;
 
@@ -42,7 +42,7 @@ public class MovementScript : MonoBehaviour
 
     public void Move()
     {
-        movementDirection = rotation.forward * vertical + rotation.right * horizontal;
+        movementDirection = orientation.forward * vertical + orientation.right * horizontal;
 
 
         rb.AddForce(movementDirection * speed * 10, ForceMode.Force);
