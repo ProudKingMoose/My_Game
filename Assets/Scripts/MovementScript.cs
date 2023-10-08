@@ -13,6 +13,7 @@ public class MovementScript : MonoBehaviour
     public Transform orientation;
 
     Vector3 movementDirection;
+    Vector3 currentPos, lastPos;
 
     Rigidbody rb;
 
@@ -22,16 +23,24 @@ public class MovementScript : MonoBehaviour
         rb.freezeRotation = true;
     }
 
-    private void Update()
+    void Update()
     {
         Inputs();
 
         rb.drag = friction;
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         Move();
+
+        currentPos = transform.position;
+
+        if (currentPos == lastPos)
+            GameManager.instance.isWalking = false;
+        else
+            GameManager.instance.isWalking = true;
+        lastPos = currentPos;
     }
 
     private void Inputs()
@@ -54,6 +63,29 @@ public class MovementScript : MonoBehaviour
 
         Vector3 newVel = Vector3.Normalize(curVel);
 
-    rb.velocity = newVel;
+        rb.velocity = newVel;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Location1")
+        {
+            GameManager.instance.currentLocation = 0;
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Location1")
+        {
+            
+            GameManager.instance.encounterPosible = true;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Location1")
+        {
+            GameManager.instance.encounterPosible = false;
+        }
     }
 }

@@ -51,12 +51,24 @@ public class CombatStateMachine : MonoBehaviour
     public GameObject energyButton;
     private List<GameObject> aButtons = new List<GameObject>();
 
+    //spawnPoints
+    public List<Transform> spawnPoints = new List<Transform>();
 
+    private void Awake()
+    {
+        for (int i = 0; i < GameManager.instance.amountOfEnemies; i++)
+        {
+            GameObject NewEnemy = Instantiate(GameManager.instance.enemiesToBattle[i], spawnPoints[i].position, Quaternion.identity) as GameObject;
+            NewEnemy.name = NewEnemy.GetComponent<EnemyStateMachine>().enemy.theName+"_" + i;
+            NewEnemy.GetComponent<EnemyStateMachine>().enemy.theName = NewEnemy.name;
+            Enemies.Add(NewEnemy);
+        }
+    }
     void Start()
     {
         selectEnemy = false;
         battleState = Action.WAIT;
-        Enemies.AddRange(GameObject.FindGameObjectsWithTag ("Enemy"));
+        //Enemies.AddRange(GameObject.FindGameObjectsWithTag ("Enemy"));
         Heroes.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
 
         HeroInput = HeroGUI.ACTIVATE;
@@ -133,6 +145,10 @@ public class CombatStateMachine : MonoBehaviour
                 {
                     Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
                 }
+                GameManager.instance.LoadSceneAfterBattle();
+                GameManager.instance.state = GameManager.Gamestates.OverWorld;
+                GameManager.instance.enemiesToBattle.Clear();
+
             break;
         }
 
