@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class EnemyStateMachine : MonoBehaviour
 {
@@ -29,8 +29,12 @@ public class EnemyStateMachine : MonoBehaviour
     private Vector3 startPosition;
     public GameObject HeroTargeted;
 
-    private bool actionStarted = false;
+    public Transform AttackNameSpacer;
+    public GameObject AttackNamePanel;
+    private List<GameObject> attackNames = new List<GameObject>();
+    private String attackName;
 
+    private bool actionStarted = false;
 
     private float chosenAttackDamage;
 
@@ -43,6 +47,7 @@ public class EnemyStateMachine : MonoBehaviour
 
         Selector.SetActive(false);
         currentstate = States.PROCESSING;
+        AttackNameSpacer = GameObject.Find("AttackNameSpacer").GetComponent<Transform>();
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
         startPosition = transform.position;
         alive = true;
@@ -117,10 +122,11 @@ public class EnemyStateMachine : MonoBehaviour
         Attack.Attacker = enemy.theName;
         Attack.Type = "Enemy";
         Attack.AttackersGameObject = this.gameObject;
-        Attack.AttackTarget = CSM.Heroes[Random.Range(0, CSM.Heroes.Count)];
-        Attack.choosenAttack = enemy.aviableAttacks[Random.Range(0, enemy.aviableAttacks.Count)];
+        Attack.AttackTarget = CSM.Heroes[UnityEngine.Random.Range(0, CSM.Heroes.Count)];
+        Attack.choosenAttack = enemy.aviableAttacks[UnityEngine.Random.Range(0, enemy.aviableAttacks.Count)];
         chosenAttackDamage = Attack.choosenAttack.attackDamage;
-        Debug.Log(this.gameObject + "Has Chosen The Attack" + Attack.choosenAttack.attackName   );
+        attackName = Attack.choosenAttack.name;
+        Debug.Log(this.gameObject + "Has Chosen The Attack" + Attack.choosenAttack.attackName);
         CSM.TakeActions(Attack);
     }
 
@@ -133,12 +139,16 @@ public class EnemyStateMachine : MonoBehaviour
 
         actionStarted = true;
 
+        ANamePanel();
+
         Vector3 heroPos = new Vector3(HeroTargeted.transform.position.x - 1.5f, HeroTargeted.transform.position.y, HeroTargeted.transform.position.z);
         while (MoveToCharacters(heroPos)){yield return null;}
 
         yield return new WaitForSeconds(0.5f);
 
         DoDamage();
+
+        RemoveAttackText();
 
         Vector3 startPos = startPosition;
         while (MoveToStartPos(startPos)) { yield return null; }
@@ -150,6 +160,23 @@ public class EnemyStateMachine : MonoBehaviour
         actionStarted = false;
         currentColdown = 0;
         currentstate = States.PROCESSING;
+    }
+
+    void ANamePanel()
+    {
+        GameObject ANamePanel = Instantiate(AttackNamePanel) as GameObject;
+        Text AttackNamePanelText = ANamePanel.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        AttackNamePanelText.text = attackName;
+        ANamePanel.transform.SetParent(AttackNameSpacer, false);
+        attackNames.Add(ANamePanel);
+    }
+
+    void RemoveAttackText()
+    {
+        foreach (GameObject name in attackNames)
+        {
+            Destroy(name);
+        }
     }
 
     private bool MoveToCharacters(Vector3 target)

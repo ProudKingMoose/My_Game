@@ -275,6 +275,12 @@ public class CombatStateMachine : MonoBehaviour
         EnergyAttackButton.transform.SetParent(ActionSpacer, false);
         aButtons.Add(EnergyAttackButton);
 
+        GameObject ItemButton = Instantiate(ActionButton) as GameObject;
+        Text ItemButtonText = ItemButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        ItemButtonText.text = "Items";
+        ItemButton.transform.SetParent(ActionSpacer, false);
+        aButtons.Add(ItemButton);
+
         if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.EnergyAttacks.Count > 0)
         {
             foreach (BaseAttack energyAbility in HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.EnergyAttacks)

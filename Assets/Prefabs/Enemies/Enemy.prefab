@@ -137,6 +137,9 @@ MonoBehaviour:
   currentstate: 1
   Selector: {fileID: 8602518254165201815}
   HeroTargeted: {fileID: 0}
+  AttackNameSpacer: {fileID: 0}
+  AttackNamePanel: {fileID: 7175401880436715134, guid: 1623b00f195a971418858082666b0ccb,
+    type: 3}
 --- !u!1001 &4729450546659615085
 PrefabInstance:
   m_ObjectHideFlags: 0

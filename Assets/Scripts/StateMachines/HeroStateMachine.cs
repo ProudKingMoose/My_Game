@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HeroStatemachine : MonoBehaviour
 {
@@ -35,10 +37,17 @@ public class HeroStatemachine : MonoBehaviour
     private Transform HeroPanelSpacer;
     public GameObject HeroPanel;
 
+    public Transform AttackNameSpacer;
+    public GameObject AttackNamePanel;
+    private List<GameObject> attackNames = new List<GameObject>();
+    private String attackName;
+
     void Start()
     {
         coldownLimit = 4;
         currentColdown = 0;
+
+        AttackNameSpacer = GameObject.Find("AttackNameSpacer").GetComponent<Transform>();
 
         HeroPanelSpacer = GameObject.Find("Battle UI").transform.Find("HeroPanel").transform.Find("HeroPanelSpacer");
         CreateHeroPanel();
@@ -118,7 +127,11 @@ public class HeroStatemachine : MonoBehaviour
             yield break;
         }
 
+        attackName = CSM.HandlerList[0].choosenAttack.name;
+
         actionStarted = true;
+
+        ANamePanel();
 
         Vector3 enemyPos = new Vector3(EnemyTargeted.transform.position.x + 1.5f, EnemyTargeted.transform.position.y, EnemyTargeted.transform.position.z);
         while (MoveToEnemy(enemyPos)) { yield return null; }
@@ -126,6 +139,8 @@ public class HeroStatemachine : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         DoDamage();
+
+        RemoveAttackText();
 
         Vector3 startPos = startPosition;
         while (MoveToStartPos(startPos)) { yield return null; }
@@ -154,6 +169,23 @@ public class HeroStatemachine : MonoBehaviour
     private bool MoveToStartPos(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
+    }
+
+    void ANamePanel()
+    {
+        GameObject ANamePanel = Instantiate(AttackNamePanel) as GameObject;
+        Text AttackNamePanelText = ANamePanel.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        AttackNamePanelText.text = attackName;
+        ANamePanel.transform.SetParent(AttackNameSpacer, false);
+        attackNames.Add(ANamePanel);
+    }
+
+    void RemoveAttackText()
+    {
+        foreach (GameObject name in attackNames)
+        {
+            Destroy(name);
+        }
     }
 
     public void TakeDamage(float damageAmount)
