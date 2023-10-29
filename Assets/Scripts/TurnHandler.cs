@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,4 +13,6 @@ public class TurnHandler
 
     public GameObject AttackTarget;
     public BaseAttack choosenAttack;
+
+    public int fusion;
 }

@@ -15,6 +15,7 @@ public class EnemyStateMachine : MonoBehaviour
         CHOOSEACTION,
         WAITING,
         ATTACKING,
+        CHECKTURN,
         DEAD,
     }
 
@@ -46,7 +47,7 @@ public class EnemyStateMachine : MonoBehaviour
         currentColdown = 0;
 
         Selector.SetActive(false);
-        currentstate = States.PROCESSING;
+        currentstate = States.CHECKTURN;
         AttackNameSpacer = GameObject.Find("AttackNameSpacer").GetComponent<Transform>();
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
         startPosition = transform.position;
@@ -56,8 +57,14 @@ public class EnemyStateMachine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         switch (currentstate)
         {
+            case (States.CHECKTURN):
+                if (CSM.turn == CombatStateMachine.Turn.ENEMYTURN)
+                    currentstate = States.PROCESSING;
+                break;
+
             case (States.PROCESSING):
                 Processing();
                 break;
@@ -68,7 +75,11 @@ public class EnemyStateMachine : MonoBehaviour
                 break;
 
             case (States.WAITING):
-
+                if (CSM.HandlerList.Count == 0)
+                {
+                    CSM.turn = CombatStateMachine.Turn.HEROTURN;
+                    currentstate = States.CHECKTURN;
+                }
                 break;
 
             case (States.ATTACKING):
@@ -159,7 +170,7 @@ public class EnemyStateMachine : MonoBehaviour
 
         actionStarted = false;
         currentColdown = 0;
-        currentstate = States.PROCESSING;
+        currentstate = States.WAITING;
     }
 
     void ANamePanel()

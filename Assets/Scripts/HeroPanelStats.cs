@@ -8,5 +8,4 @@ public class HeroPanelStats : MonoBehaviour
     public Text HeroName;
     public Text HeroHP;
     public Text HeroEP;
-
 }

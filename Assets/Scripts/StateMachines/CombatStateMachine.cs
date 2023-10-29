@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,6 +20,13 @@ public class CombatStateMachine : MonoBehaviour
 
     public Action battleState;
 
+    public enum Turn
+    {
+        HEROTURN = 0,
+        ENEMYTURN = 1
+    }
+    public Turn turn;
+
     public List<TurnHandler> HandlerList = new List<TurnHandler>();
     public List<GameObject> Heroes = new List<GameObject>();
     public List<GameObject> Enemies = new List<GameObject>();
@@ -27,6 +36,8 @@ public class CombatStateMachine : MonoBehaviour
     private GameObject hoveredObject;
     private GameObject selectedObject;
     private bool selectEnemy;
+
+    private GameObject FSPanel;
 
     public enum HeroGUI
     {
@@ -44,11 +55,14 @@ public class CombatStateMachine : MonoBehaviour
 
     public GameObject ActionPanel;
     public GameObject EnergyPanel;
+    public GameObject FusionPanel;
 
     public Transform ActionSpacer;
     public Transform EnergySpacer;
+    public Transform FusionSpacer;
     public GameObject ActionButton;
-    public GameObject energyButton;
+    public GameObject Ebutton;
+    public GameObject FuseButton;
     private List<GameObject> aButtons = new List<GameObject>();
 
     //spawnPoints
@@ -66,6 +80,9 @@ public class CombatStateMachine : MonoBehaviour
     }
     void Start()
     {
+
+        turn = Turn.HEROTURN;
+
         selectEnemy = false;
         battleState = Action.WAIT;
         //Enemies.AddRange(GameObject.FindGameObjectsWithTag ("Enemy"));
@@ -74,6 +91,7 @@ public class CombatStateMachine : MonoBehaviour
         HeroInput = HeroGUI.ACTIVATE;
         ActionPanel.SetActive (false);
         EnergyPanel.SetActive (false);
+        FusionPanel.SetActive (false);
     }
 
     // Update is called once per frame
@@ -102,7 +120,7 @@ public class CombatStateMachine : MonoBehaviour
                         }
                         else
                         {
-                            HandlerList[0].AttackTarget = Heroes[Random.Range(0, Heroes.Count)];
+                            HandlerList[0].AttackTarget = Heroes[UnityEngine.Random.Range(0, Heroes.Count)];
                             ESM.HeroTargeted = HandlerList[0].AttackTarget;
                             ESM.currentstate = EnemyStateMachine.States.ATTACKING;
                         }
@@ -167,6 +185,9 @@ public class CombatStateMachine : MonoBehaviour
                 }
             break;
             case (HeroGUI.WAITING):
+                if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.FusionUses > 0)
+                    FSPanel.GetComponent<Button>().interactable = false;
+
                 if (selectEnemy)
                     HandleMouseClick();
             break;
@@ -198,6 +219,40 @@ public class CombatStateMachine : MonoBehaviour
         ChoisefromHero.AttackTarget = selectedEnemy;
         Debug.Log (ChoisefromHero.AttackTarget);
         HeroInput = HeroGUI.DONE;
+    }
+
+    public void Input3(BaseAttack choosenAbility)
+    {
+        ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
+        ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
+        ChoisefromHero.Type = "Hero";
+
+        selectEnemy = true;
+        ChoisefromHero.choosenAttack = choosenAbility;
+        EnergyPanel.SetActive(false);
+    }
+
+    public void Input4()
+    {
+        ActionPanel.SetActive(false);
+        EnergyPanel.SetActive(true);
+    }
+
+    public void Input5()
+    {
+        ActionPanel.SetActive(false);
+        FusionPanel.SetActive(true);
+    }
+
+    public void Input6(int ChosenEnhancement)//Complete this
+    {
+        ChoisefromHero.fusion = ChosenEnhancement;
+
+        HeroStatemachine HSM = HerosReadyToAttack[0].GetComponent<HeroStatemachine>();
+
+        HSM.hero.CurrentFusionTypeInt = ChosenEnhancement;
+
+        HSM.currentstate = HeroStatemachine.States.FUSING;
     }
 
     void HeroInputDone()
@@ -281,11 +336,19 @@ public class CombatStateMachine : MonoBehaviour
         ItemButton.transform.SetParent(ActionSpacer, false);
         aButtons.Add(ItemButton);
 
+        GameObject FusionFuseButton = Instantiate(ActionButton) as GameObject;
+        Text FusionFuseButtonText = FusionFuseButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        FusionFuseButtonText.text = "Fusion";
+        FusionFuseButton.GetComponent<Button>().onClick?.AddListener(() => Input5());
+        FusionFuseButton.transform.SetParent(ActionSpacer, false);
+        aButtons.Add(FusionFuseButton);
+        FSPanel = FusionFuseButton;
+
         if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.EnergyAttacks.Count > 0)
         {
             foreach (BaseAttack energyAbility in HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.EnergyAttacks)
             {
-                GameObject EnergyButton = Instantiate(this.energyButton) as GameObject;
+                GameObject EnergyButton = Instantiate(this.Ebutton) as GameObject;
                 Text EnergyButtonText = EnergyButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
                 EnergyButtonText.text = energyAbility.name;
                 ActionButton AB = EnergyButton.GetComponent<ActionButton>();
@@ -298,23 +361,36 @@ public class CombatStateMachine : MonoBehaviour
         {
             EnergyAttackButton.GetComponent<Button>().interactable = false;
         }
-    }
 
-    public void Input3(BaseAttack choosenAbility)
-    {
-        ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
-        ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
-        ChoisefromHero.Type = "Hero";
-
-        selectEnemy = true;
-        ChoisefromHero.choosenAttack = choosenAbility;
-        EnergyPanel.SetActive(false);
-    }
-
-    public void Input4()
-    {
-        ActionPanel.SetActive(false);
-        EnergyPanel.SetActive(true);
+        if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1 != BaseClass.EnergyType1.None)
+        {
+            if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1 != BaseClass.EnergyType1.None)
+            {
+                GameObject FusionButton = Instantiate(FuseButton) as GameObject;
+                Text FusionButtonText = FusionButton.transform.Find("Text (Legacy)").gameObject.GetComponent <Text>();
+                String FE = HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1.ToString();
+                FusionButtonText.text = FE;
+                ActionButton FusionType = FusionButton.GetComponent<ActionButton>();
+                FusionType.ChosenFusionInt = ((int)HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1);
+                FusionButton.transform.SetParent(FusionSpacer, false);
+                aButtons.Add(FusionButton);
+            }
+            if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type2 != BaseClass.EnergyType1.None)
+            {
+                GameObject FusionButton = Instantiate(FuseButton) as GameObject;
+                Text FusionButtonText = FusionButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+                String FE = HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type2.ToString();
+                FusionButtonText.text = FE;
+                ActionButton FusionType = FusionButton.GetComponent<ActionButton>();
+                FusionType.ChosenFusionInt = ((int)HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type2);
+                FusionButton.transform.SetParent(FusionSpacer, false);
+                aButtons.Add(FusionButton);
+            }
+        }
+        else
+        {
+            FusionFuseButton.GetComponent<Button>().interactable = false;
+        }
     }
 }
 

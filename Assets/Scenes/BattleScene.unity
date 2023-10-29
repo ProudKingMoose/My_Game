@@ -734,11 +734,14 @@ MonoBehaviour:
   HerosReadyToAttack: []
   ActionPanel: {fileID: 1842735023}
   EnergyPanel: {fileID: 2095899495}
+  FusionPanel: {fileID: 979881970}
   ActionSpacer: {fileID: 97741279}
   EnergySpacer: {fileID: 1022257019}
+  FusionSpacer: {fileID: 1483031474}
   ActionButton: {fileID: 1295924075341336952, guid: a7f5eae62c5c923468fa48c2b1aab630,
     type: 3}
-  energyButton: {fileID: 5551230643156711959, guid: c7b008ef158621043ad0540f4645256f,
+  Ebutton: {fileID: 5551230643156711959, guid: c7b008ef158621043ad0540f4645256f, type: 3}
+  FuseButton: {fileID: 7207894475381394841, guid: d0c691c5b4d754340b58ee7efac3e9cc,
     type: 3}
   spawnPoints:
   - {fileID: 988017281}
@@ -841,6 +844,82 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &979881970
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 979881971}
+  - component: {fileID: 979881973}
+  - component: {fileID: 979881972}
+  m_Layer: 5
+  m_Name: FusionPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &979881971
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979881970}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1483031474}
+  m_Father: {fileID: 1112853993}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.56531525, y: 0.6748513}
+  m_AnchorMax: {x: 0.7816358, y: 0.89226717}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &979881972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979881970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.95686275}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &979881973
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979881970}
+  m_CullTransparentMesh: 1
 --- !u!1 &988017280
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,6 +1153,7 @@ RectTransform:
   - {fileID: 2024774675}
   - {fileID: 1842735024}
   - {fileID: 2095899496}
+  - {fileID: 979881971}
   - {fileID: 1805621317}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1188,6 +1268,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1483031473
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1483031474}
+  - component: {fileID: 1483031475}
+  m_Layer: 5
+  m_Name: FusionSpacer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1483031474
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483031473}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 979881971}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.00012207031, y: -0.38859558}
+  m_SizeDelta: {x: -8.553345, y: -9.330994}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1483031475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483031473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!4 &1605152275 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1753865140887662665, guid: fee4640975ce88141b5f7ca9fa19727c,
@@ -1258,7 +1400,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.24875, y: 0.10444445}
   m_AnchorMax: {x: 0.7453864, y: 0.23333333}
-  m_AnchoredPosition: {x: -0.51498413, y: 0.64508057}
+  m_AnchoredPosition: {x: -0.51501465, y: 0.64508057}
   m_SizeDelta: {x: 0.22989655, y: 0.69039917}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1805621318
@@ -1479,8 +1621,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero:
     theName: Calisudos
-    Type1: 0
-    Type2: 0
+    Type1: 4
+    Type2: 10
     baseHP: 200
     currentHP: 200
     baseEnergy: 50
@@ -1489,6 +1631,8 @@ MonoBehaviour:
     currentDefence: 0
     baseAttackPower: 0
     currentAttackPower: 0
+    FusionUses: 0
+    FusionTypeUsed: 0
     aviableAttacks:
     - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
     strength: 10
@@ -1703,8 +1847,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero:
     theName: Halcalundra
-    Type1: 0
-    Type2: 0
+    Type1: 1
+    Type2: 3
     baseHP: 200
     currentHP: 200
     baseEnergy: 50
@@ -1713,6 +1857,8 @@ MonoBehaviour:
     currentDefence: 0
     baseAttackPower: 0
     currentAttackPower: 0
+    FusionUses: 0
+    FusionTypeUsed: 0
     aviableAttacks:
     - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
     strength: 10
