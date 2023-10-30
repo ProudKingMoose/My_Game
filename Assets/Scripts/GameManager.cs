@@ -8,16 +8,10 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager instance;
-    [System.Serializable]
-    public class locationData
-    {
-        public string locationName;
-        public int maxAmountOfEnemies = 5;
-        public string BattleScene;
-        public List<GameObject> enemies = new List<GameObject>();
-    }
 
-    public List<locationData> locations = new List<locationData>();
+    public RegionData currentRegion;
+
+    public GameObject heroCharacter;
 
     public string sceneToLoad;
     public string lastScene;
@@ -25,8 +19,6 @@ public class GameManager : MonoBehaviour
     public bool isWalking = false;
     public bool encounterPosible = false;
     public bool attacked;
-
-    public int currentLocation;
 
     public int amountOfEnemies;
     public List<GameObject> enemiesToBattle = new List<GameObject>();
@@ -88,6 +80,11 @@ public class GameManager : MonoBehaviour
         else if (instance != this)
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
+        if (!GameObject.Find("Player"))
+        {
+            GameObject Player = Instantiate(heroCharacter, nextHeroPosition, Quaternion.identity) as GameObject;
+            Player.name = "Player";
+        }
     }
 
     // Update is called once per frame
@@ -108,17 +105,17 @@ public class GameManager : MonoBehaviour
 
     void BattleStart()
     {
-        amountOfEnemies = Random.Range(1, locations[currentLocation].maxAmountOfEnemies+1);
+        amountOfEnemies = Random.Range(1, currentRegion.maxAmountOfEnemies+1);
 
         for (int i = 0; i < amountOfEnemies; i++)
         {
-            enemiesToBattle.Add(locations[currentLocation].enemies[Random.Range(0, locations[currentLocation].enemies.Count)]);
+            enemiesToBattle.Add(currentRegion.enemies[Random.Range(0, currentRegion.enemies.Count)]);
         }
 
         lastHeroPosition = GameObject.Find("Player").gameObject.transform.position;
         nextHeroPosition = lastHeroPosition;
         lastScene = SceneManager.GetActiveScene().name;
-        SceneManager.LoadScene(locations[currentLocation].BattleScene);
+        SceneManager.LoadScene(currentRegion.BattleScene);
         HeroReset();
     }
 

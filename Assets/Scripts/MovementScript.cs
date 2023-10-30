@@ -21,6 +21,8 @@ public class MovementScript : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        transform.position = GameManager.instance.nextHeroPosition;
     }
 
     void Update()
@@ -68,14 +70,15 @@ public class MovementScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Location1")
+        if (other.tag == "EncounterZone")
         {
-            GameManager.instance.currentLocation = 0;
+            RegionData region = other.GetComponent<RegionData>();
+            GameManager.instance.currentRegion = region;
         }
     }
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Location1")
+        if (other.tag == "EncounterZone")
         {
             
             GameManager.instance.encounterPosible = true;
@@ -83,7 +86,7 @@ public class MovementScript : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Location1")
+        if (other.tag == "EncounterZone")
         {
             GameManager.instance.encounterPosible = false;
         }

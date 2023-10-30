@@ -44,3 +44,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97da33f4191d1824dbdb0af6a8272c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentRegion: {fileID: 0}
+  heroCharacter: {fileID: 7087685995640020362, guid: 2b1ea097f09358245ac41605032c45e3,
+    type: 3}
+  sceneToLoad: 
+  lastScene: 
+  isWalking: 0
+  encounterPosible: 0
+  attacked: 0
+  amountOfEnemies: 0
+  enemiesToBattle: []
+  lastHeroPosition: {x: 0, y: 0, z: 0}
+  nextHeroPosition: {x: 0, y: 0, z: 0}
+  state: 0
