@@ -5,7 +5,7 @@ using UnityEngine;
 public class ActionButton : MonoBehaviour
 {
     public BaseAttack AbilityToPerform;
-    public int ChosenFusionInt;
+    public int ChosenFusionInt;//Change this to a enum value instead of an int value
     public void AbilityCast()
     {
         GameObject.Find("CombatManager").GetComponent<CombatStateMachine>().Input3(AbilityToPerform);

@@ -724,6 +724,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleState: 0
+  turn: 0
   HandlerList: []
   Heroes: []
   Enemies: []
@@ -1622,7 +1623,9 @@ MonoBehaviour:
   hero:
     theName: Calisudos
     Type1: 4
-    Type2: 10
+    Type1Level: 1
+    Type2: 5
+    Type2Level: 2
     baseHP: 200
     currentHP: 200
     baseEnergy: 50
@@ -1631,15 +1634,21 @@ MonoBehaviour:
     currentDefence: 0
     baseAttackPower: 0
     currentAttackPower: 0
+    baseEDefence: 3
+    currentEDefence: 3
+    baseEAttackPower: 15
+    currentEAttackPower: 15
     FusionUses: 0
-    FusionTypeUsed: 0
+    CurrentFusionTypeInt: 0
+    currentFusionType: 0
+    usedFusionLevel: 0
+    EnergyEffectedType: 0
+    EnergyLVEffected: 0
+    FusionPower: 0
+    effectDamageHold: 0
+    beenEffected: 0
     aviableAttacks:
     - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
-    strength: 10
-    energyPower: 10
-    armour: 0
-    elementDefence: 5
-    elementCombinationPower: 5
     EnergyAttacks:
     - {fileID: 3298015915098426050, guid: 349d58451438fa546a3bccd924895a33, type: 3}
   currentstate: 0
@@ -1848,7 +1857,9 @@ MonoBehaviour:
   hero:
     theName: Halcalundra
     Type1: 1
+    Type1Level: 3
     Type2: 3
+    Type2Level: 1
     baseHP: 200
     currentHP: 200
     baseEnergy: 50
@@ -1857,15 +1868,21 @@ MonoBehaviour:
     currentDefence: 0
     baseAttackPower: 0
     currentAttackPower: 0
+    baseEDefence: 5
+    currentEDefence: 5
+    baseEAttackPower: 11
+    currentEAttackPower: 11
     FusionUses: 0
-    FusionTypeUsed: 0
+    CurrentFusionTypeInt: 0
+    currentFusionType: 0
+    usedFusionLevel: 0
+    EnergyEffectedType: 0
+    EnergyLVEffected: 0
+    FusionPower: 0
+    effectDamageHold: 0
+    beenEffected: 0
     aviableAttacks:
     - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
-    strength: 10
-    energyPower: 10
-    armour: 0
-    elementDefence: 5
-    elementCombinationPower: 5
     EnergyAttacks:
     - {fileID: 7390264582323948079, guid: 32f7f2a64322a564b860f1ab96475e43, type: 3}
   currentstate: 0

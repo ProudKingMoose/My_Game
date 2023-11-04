@@ -122,7 +122,9 @@ MonoBehaviour:
   enemy:
     theName: Enemy 1
     Type1: 0
+    Type1Level: 0
     Type2: 0
+    Type2Level: 0
     baseHP: 50
     currentHP: 50
     baseEnergy: 50
@@ -131,6 +133,19 @@ MonoBehaviour:
     currentDefence: 10
     baseAttackPower: 5
     currentAttackPower: 5
+    baseEDefence: 10
+    currentEDefence: 10
+    baseEAttackPower: 3
+    currentEAttackPower: 3
+    FusionUses: 0
+    CurrentFusionTypeInt: 0
+    currentFusionType: 0
+    usedFusionLevel: 0
+    EnergyEffectedType: 0
+    EnergyLVEffected: 0
+    FusionPower: 0
+    effectDamageHold: 0
+    beenEffected: 0
     aviableAttacks:
     - {fileID: 3090086518861621652, guid: f714020c8396d3447bad0bc5db2ef54f, type: 3}
   currentstate: 1

@@ -9,25 +9,24 @@ public class BaseClass
     public enum EnergyType1
     {
         None = 0,
-        Heat_I = 1,
-        Chill_I = 2,
-        Zapp_I = 3,
-        Light_I = 4,
-        Darkness_I = 5,
-        Heat_II = 6,
-        Chill_II = 7,
-        Zapp_II = 8,
-        Light_II = 9,
-        Darkness_II = 10,
-        Heat_III = 11,
-        Chill_III = 12,
-        Zapp_III = 13,
-        Light_III = 14,
-        Darkness_III = 15,
+        Heat = 1,
+        Chill = 2,
+        Zapp = 3,
+        Light = 4,
+        Darkness = 5,
+    }
+
+    public enum EnergyLevel
+    {
+        I = 1,
+        II = 2,
+        III = 3,
     }
 
     public EnergyType1 Type1;
+    public EnergyLevel Type1Level;
     public EnergyType1 Type2;
+    public EnergyLevel Type2Level;
 
     public float baseHP;
     public float currentHP;
@@ -41,10 +40,22 @@ public class BaseClass
     public float baseAttackPower;
     public float currentAttackPower;
 
+    public float baseEDefence;
+    public float currentEDefence;
+
+    public float baseEAttackPower;
+    public float currentEAttackPower;
+
     public float FusionUses;
-    public float CurrentFusionTypeInt;
+    public int CurrentFusionTypeInt;
     public EnergyType1 currentFusionType;
+    public EnergyLevel usedFusionLevel;
+    public EnergyType1 EnergyEffectedType;
+    public EnergyLevel EnergyLVEffected;
     public float FusionPower;
+
+    public int effectDamageHold;
+    public bool beenEffected;
 
     public List<BaseAttack> aviableAttacks = new List<BaseAttack>();
 }

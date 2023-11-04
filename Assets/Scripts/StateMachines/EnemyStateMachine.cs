@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static BaseClass;
 
 public class EnemyStateMachine : MonoBehaviour
 {
@@ -77,6 +78,7 @@ public class EnemyStateMachine : MonoBehaviour
             case (States.WAITING):
                 if (CSM.HandlerList.Count == 0)
                 {
+                    //EffectDamageActivate();
                     CSM.turn = CombatStateMachine.Turn.HEROTURN;
                     currentstate = States.CHECKTURN;
                 }
@@ -109,9 +111,9 @@ public class EnemyStateMachine : MonoBehaviour
 
                     this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
 
-                    alive = false;
-
                     CSM.battleState = CombatStateMachine.Action.ALIVECONTROL;
+
+                    alive = false;
                 }
                 break;
         }
@@ -190,6 +192,14 @@ public class EnemyStateMachine : MonoBehaviour
         }
     }
 
+    void FindEnergyCurrentLV()
+    {
+        if (enemy.currentFusionType == enemy.Type1)
+            enemy.usedFusionLevel = enemy.Type1Level;
+        else if (enemy.currentFusionType == enemy.Type2)
+            enemy.usedFusionLevel = enemy.Type2Level;
+    }
+
     private bool MoveToCharacters(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
@@ -200,7 +210,7 @@ public class EnemyStateMachine : MonoBehaviour
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
     }
 
-    public void TakeDamage(float damageAmount)
+    public void TakeDamage(float damageAmount, EnergyType1 effect, EnergyLevel level)
     {
         enemy.currentHP -= damageAmount;
         if (enemy.currentHP < 0)
@@ -208,10 +218,68 @@ public class EnemyStateMachine : MonoBehaviour
             enemy.currentHP = 0;
             currentstate = States.DEAD;
         }
+        if (effect != EnergyType1.None)
+        {
+            enemy.EnergyEffectedType = effect;
+            enemy.EnergyLVEffected = level;
+            enemy.beenEffected = true;
+            Debug.Log(enemy.beenEffected + "effected by" + enemy.EnergyEffectedType + " " + enemy.EnergyLVEffected);
+        }
+    }
+
+    public void TakeEffectDamage(float heroEPower)
+    {
+        float DMGMult = EffectLVCalculation();
+
+        float totDMG = (heroEPower - enemy.currentEDefence) * DMGMult;
+        if (totDMG < 0)
+            totDMG = 0;
+        enemy.currentHP -= totDMG;
+        enemy.effectDamageHold--;
+
+        if (enemy.currentHP < 0)
+        {
+            enemy.currentHP = 0;
+            currentstate = States.DEAD;
+        }
+
+        Debug.Log(totDMG + " Damage was done to " + enemy.theName);
+        if (enemy.effectDamageHold == 0)
+            enemy.beenEffected = false;
     }
     void DoDamage()
     {
         float calculatedDamage = enemy.currentAttackPower + chosenAttackDamage;
-        HeroTargeted.GetComponent<HeroStatemachine>().TakeDamage(calculatedDamage);
+        FindEnergyCurrentLV();
+        HeroTargeted.GetComponent<HeroStatemachine>().TakeDamage(calculatedDamage, enemy.currentFusionType, enemy.usedFusionLevel);
+    }
+
+    void EffectDamageActivate()
+    {
+        foreach (GameObject hero in CSM.Heroes)
+        {
+            if (hero.GetComponent<HeroStatemachine>().hero.beenEffected)
+                hero.GetComponent<HeroStatemachine>().TakeEffectDamage();
+        }
+    }
+
+    float EffectLVCalculation()
+    {
+        switch (enemy.EnergyLVEffected)
+        {
+            case EnergyLevel.I:
+                if (enemy.effectDamageHold == 0)
+                    enemy.effectDamageHold = 1;
+                return 1;
+            case EnergyLevel.II:
+                if (enemy.effectDamageHold == 0)
+                    enemy.effectDamageHold = 2;
+                return 1.5f;
+            case EnergyLevel.III:
+                if (enemy.effectDamageHold == 0)
+                    enemy.effectDamageHold = 3;
+                return 2;
+        }
+        return 0;
     }
 }

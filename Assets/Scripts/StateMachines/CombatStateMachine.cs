@@ -97,6 +97,7 @@ public class CombatStateMachine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         switch (battleState)
         {
             case (Action.WAIT):
@@ -106,7 +107,6 @@ public class CombatStateMachine : MonoBehaviour
 
             case (Action.INPUTACTION):
                 GameObject attacker = GameObject.Find(HandlerList[0].Attacker);
-                Debug.Log (attacker);
                 if (HandlerList[0].Type == "Enemy")
                 {
                     EnemyStateMachine ESM = attacker.GetComponent<EnemyStateMachine>();
@@ -147,8 +147,9 @@ public class CombatStateMachine : MonoBehaviour
                 {
                     battleState = Action.WIN;
                 }
-                else
+                else 
                 {
+                    Debug.Log("Doing This?");
                     ClearAttackPanel();
                     HeroInput = HeroGUI.ACTIVATE;
                 }
@@ -250,7 +251,7 @@ public class CombatStateMachine : MonoBehaviour
 
         HeroStatemachine HSM = HerosReadyToAttack[0].GetComponent<HeroStatemachine>();
 
-        HSM.hero.CurrentFusionTypeInt = ChosenEnhancement;
+        HSM.hero.currentFusionType = (BaseClass.EnergyType1)ChosenEnhancement;
 
         HSM.currentstate = HeroStatemachine.States.FUSING;
     }
@@ -368,7 +369,7 @@ public class CombatStateMachine : MonoBehaviour
             {
                 GameObject FusionButton = Instantiate(FuseButton) as GameObject;
                 Text FusionButtonText = FusionButton.transform.Find("Text (Legacy)").gameObject.GetComponent <Text>();
-                String FE = HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1.ToString();
+                String FE = HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1.ToString() + " " + HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1Level.ToString();
                 FusionButtonText.text = FE;
                 ActionButton FusionType = FusionButton.GetComponent<ActionButton>();
                 FusionType.ChosenFusionInt = ((int)HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1);
@@ -379,7 +380,7 @@ public class CombatStateMachine : MonoBehaviour
             {
                 GameObject FusionButton = Instantiate(FuseButton) as GameObject;
                 Text FusionButtonText = FusionButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
-                String FE = HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type2.ToString();
+                String FE = HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type2.ToString() + " " + HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type2Level.ToString();
                 FusionButtonText.text = FE;
                 ActionButton FusionType = FusionButton.GetComponent<ActionButton>();
                 FusionType.ChosenFusionInt = ((int)HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type2);

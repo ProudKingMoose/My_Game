@@ -5,6 +5,9 @@ using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static BaseClass;
+using static CombatStateMachine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class HeroStatemachine : MonoBehaviour
 {
@@ -34,6 +37,7 @@ public class HeroStatemachine : MonoBehaviour
 
     private bool alive = true;
     private bool actionStarted = false;
+    private bool effectStart = false;
 
     private HeroPanelStats Stats;
     private Transform HeroPanelSpacer;
@@ -81,6 +85,8 @@ public class HeroStatemachine : MonoBehaviour
             case (States.WAITING):
                 if (CSM.HerosReadyToAttack.Count == 0)
                 {
+                    if (effectStart)
+                        EffectDamageActivate();
                     CSM.turn = CombatStateMachine.Turn.ENEMYTURN;
                     currentstate = States.CHECKTURN;
                 }
@@ -162,6 +168,9 @@ public class HeroStatemachine : MonoBehaviour
 
         CSM.HandlerList.RemoveAt(0);
 
+        if (CSM.HerosReadyToAttack.Count == 0)
+            effectStart = true;
+
         if(CSM.battleState != CombatStateMachine.Action.WIN && CSM.battleState != CombatStateMachine.Action.LOSE)
         {
             CSM.battleState = CombatStateMachine.Action.WAIT;
@@ -171,9 +180,10 @@ public class HeroStatemachine : MonoBehaviour
         }
 
         if (hero.FusionUses == 0)
+        {
+            hero.currentFusionType = EnergyType1.None;
             this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
-
-
+        }
         actionStarted = false;
     }
 
@@ -212,7 +222,12 @@ public class HeroStatemachine : MonoBehaviour
     {
         GameObject ANamePanel = Instantiate(AttackNamePanel) as GameObject;
         Text AttackNamePanelText = ANamePanel.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
-        AttackNamePanelText.text = attackName + (hero.CurrentFusionTypeInt.ToString());
+        if (hero.currentFusionType != EnergyType1.None )
+        {
+            FindEnergyCurrentLV();
+            AttackNamePanelText.text = hero.currentFusionType + " " + hero.usedFusionLevel + " " + attackName;
+        }
+        else AttackNamePanelText.text = attackName;
         ANamePanel.transform.SetParent(AttackNameSpacer, false);
         attackNames.Add(ANamePanel);
     }
@@ -225,7 +240,7 @@ public class HeroStatemachine : MonoBehaviour
         }
     }
 
-    public void TakeDamage(float damageAmount)
+    public void TakeDamage(float damageAmount, EnergyType1 effect, EnergyLevel level)
     {
         hero.currentHP -= damageAmount;
         if (hero.currentHP <= 0)
@@ -233,7 +248,25 @@ public class HeroStatemachine : MonoBehaviour
             hero.currentHP = 0;
             currentstate = States.DEAD;
         }
+        if (effect != EnergyType1.None)
+        {
+            hero.EnergyEffectedType = effect;
+            hero.EnergyLVEffected = level;
+        }
         HeroPanelUpdate();
+    }
+
+    public void TakeEffectDamage()
+    {
+
+    }
+
+    void FindEnergyCurrentLV()
+    {
+        if (hero.currentFusionType == hero.Type1)
+            hero.usedFusionLevel = hero.Type1Level;
+        else if (hero.currentFusionType == hero.Type2)
+            hero.usedFusionLevel = hero.Type2Level;
     }
     void DoDamage()
     {
@@ -252,113 +285,81 @@ public class HeroStatemachine : MonoBehaviour
 
         Debug.Log(calculatedDamage);
 
-        EnemyTargeted.GetComponent<EnemyStateMachine>().TakeDamage(calculatedDamage);
+        FindEnergyCurrentLV();
+        EnemyTargeted.GetComponent<EnemyStateMachine>().TakeDamage(calculatedDamage, hero.currentFusionType, hero.usedFusionLevel);
         hero.currentEnergy -= (CSM.HandlerList[0].choosenAttack.energyCost);
         HeroPanelUpdate();
     }
 
     void FusionEnhancement()
     {
-        ColorChange();
+        FusionTypeLevelCheck();
     }
 
-    void ColorChange()
+    void FusionTypeLevelCheck()
     {
-        switch (hero.CurrentFusionTypeInt)
+        if (hero.currentFusionType == hero.Type1)
         {
-            case (1):
+            if (hero.Type1Level == EnergyLevel.I)
+            {
+                hero.FusionUses = 1;
+                hero.FusionPower = 1;
+                hero.currentEnergy -= 5;
+            }
+            else if (hero.Type1Level == EnergyLevel.II)
+            {
+                hero.FusionUses = 2;
+                hero.FusionPower = 2;
+                hero.currentEnergy -= 10;
+            }
+            else if (hero.Type1Level == EnergyLevel.III)
+            {
+                hero.FusionUses = 3;
+                hero.FusionPower = 3;
+                hero.currentEnergy -= 15;
+            }
+        }
+        else if (hero.currentFusionType == hero.Type2)
+        {
+            if (hero.Type2Level == EnergyLevel.I)
+            {
+                hero.FusionUses = 1;
+                hero.FusionPower = 1;
+                hero.currentEnergy -= 5;
+            }
+            else if (hero.Type2Level == EnergyLevel.II)
+            {
+                hero.FusionUses = 2;
+                hero.FusionPower = 2;
+                hero.currentEnergy -= 10;
+            }
+            else if (hero.Type2Level == EnergyLevel.III)
+            {
+                hero.FusionUses = 3;
+                hero.FusionPower = 3;
+                hero.currentEnergy -= 15;
+            }
+        }
+        switch (hero.currentFusionType)
+        {
+            case (EnergyType1.Heat):
                 this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(200, 0, 0, 255);
-                hero.FusionUses = 1;
-                hero.FusionPower = 1;
-                hero.currentEnergy -= 5;
-                break;
-            case (6):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(200, 0, 0, 255);
-                hero.FusionUses = 2;
-                hero.FusionPower = 2;
-                hero.currentEnergy -= 10;
-                break;
-            case (11):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(200, 0, 0, 255);
-                hero.FusionUses = 3;
-                hero.FusionPower = 3;
-                hero.currentEnergy -= 15;
                 break;
 
-            case (2):
+            case (EnergyType1.Chill):
                 this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
-                hero.FusionUses = 1;
-                hero.FusionPower = 1;
-                hero.currentEnergy -= 5;
-                break;
-            case (7):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
-                hero.FusionUses = 2;
-                hero.FusionPower = 2;
-                hero.currentEnergy -= 10;
-                break;
-            case (12):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
-                hero.FusionUses = 3;
-                hero.FusionPower = 3;
-                hero.currentEnergy -= 15;
                 break;
 
-            case (3):
+            case (EnergyType1.Zapp):
                 this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 200, 200, 255);
-                hero.FusionUses = 1;
-                hero.FusionPower = 1;
-                hero.currentEnergy -= 5;
-                break;
-            case (8):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 200, 200, 255);
-                hero.FusionUses = 2;
-                hero.FusionPower = 2;
-                hero.currentEnergy -= 10;
-                break;
-            case (13):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 200, 200, 255);
-                hero.FusionUses = 3;
-                hero.FusionPower = 3;
-                hero.currentEnergy -= 15;
                 break;
 
-            case (4):
+            case (EnergyType1.Light):
                 this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
-                hero.FusionUses = 1;
-                hero.FusionPower = 1;
-                hero.currentEnergy -= 5;
-                break;
-            case (9):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
-                hero.FusionUses = 2;
-                hero.FusionPower = 2;
-                hero.currentEnergy -= 10;
-                break;
-            case (14):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
-                hero.FusionUses = 3;
-                hero.FusionPower = 3;
-                hero.currentEnergy -= 15;
                 break;
 
-            case (5):
+            case (EnergyType1.Darkness):
                 this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 0, 255);
-                hero.FusionUses = 1;
-                hero.FusionPower = 1;
-                hero.currentEnergy -= 5;
-                break;
-            case (10):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 0, 255);
-                hero.FusionUses = 2;
-                hero.FusionPower = 2;
-                hero.currentEnergy -= 10;
-                break;
-            case (15):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 0, 255);
-                hero.FusionUses = 3;
-                hero.FusionPower = 3;
-                hero.currentEnergy -= 15;
                 break;
         }
         HeroPanelUpdate();
@@ -379,5 +380,38 @@ public class HeroStatemachine : MonoBehaviour
     {
         Stats.HeroHP.text = "Health: " + hero.currentHP + "/" + hero.baseHP;
         Stats.HeroEP.text = "Energy: " + hero.currentEnergy + "/" + hero.baseEnergy;
+    }
+
+    void EffectDamageActivate()
+    {
+        effectStart = false;
+        foreach (GameObject enemy in CSM.Enemies)
+        {
+            if (enemy.GetComponent<EnemyStateMachine>().enemy.beenEffected)
+                enemy.GetComponent<EnemyStateMachine>().TakeEffectDamage(hero.currentEAttackPower);
+        }
+    }
+
+    void EffectLVCalculation(float damageMult)
+    {
+
+        switch (hero.EnergyLVEffected)
+        {
+            case EnergyLevel.I:
+                if (hero.effectDamageHold == 0)
+                    hero.effectDamageHold = 1;
+                damageMult = 1;
+                break;
+            case EnergyLevel.II:
+                if (hero.effectDamageHold == 0)
+                    hero.effectDamageHold = 2;
+                damageMult = 1.5f;
+                break;
+            case EnergyLevel.III:
+                if (hero.effectDamageHold == 0)
+                    hero.effectDamageHold = 3;
+                damageMult = 2;
+                break;
+        }
     }
 }
