@@ -121,7 +121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemy:
     theName: Enemy
-    Type1: 0
+    Type1: 2
     Type1Level: 0
     Type2: 0
     Type2Level: 0

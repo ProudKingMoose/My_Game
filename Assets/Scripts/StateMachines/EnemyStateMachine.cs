@@ -9,6 +9,7 @@ public class EnemyStateMachine : MonoBehaviour
 {
     private CombatStateMachine CSM;
     public BaseEnemy enemy;
+    private TypeEffectivness calculate;
 
     public enum States
     {
@@ -51,6 +52,7 @@ public class EnemyStateMachine : MonoBehaviour
         currentstate = States.CHECKTURN;
         AttackNameSpacer = GameObject.Find("AttackNameSpacer").GetComponent<Transform>();
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
+        calculate = GameObject.Find("CombatManager").GetComponent<TypeEffectivness>();
         startPosition = transform.position;
         alive = true;
     }
@@ -210,18 +212,20 @@ public class EnemyStateMachine : MonoBehaviour
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
     }
 
-    public void TakeDamage(float damageAmount, EnergyType1 effect, EnergyLevel level)
+    public void TakeDamage(float damageAmount, EnergyType1 fusionEffect, EnergyType1 AbilityType, EnergyLevel AbiilityLV, EnergyLevel FusionLV)
     {
-        enemy.currentHP -= damageAmount;
+        float typeVantage = calculate.GetEffectivness(AbilityType, enemy.Type1, AbiilityLV) * calculate.GetEffectivness(AbilityType, enemy.Type2, AbiilityLV);
+
+        enemy.currentHP -= damageAmount * typeVantage;
         if (enemy.currentHP < 0)
         {
             enemy.currentHP = 0;
             currentstate = States.DEAD;
         }
-        if (effect != EnergyType1.None)
+        if (fusionEffect != EnergyType1.None)
         {
-            enemy.EnergyEffectedType = effect;
-            enemy.EnergyLVEffected = level;
+            enemy.EnergyEffectedType = fusionEffect;
+            enemy.EnergyLVEffected = FusionLV;
             enemy.beenEffected = true;
             Debug.Log(enemy.beenEffected + "effected by" + enemy.EnergyEffectedType + " " + enemy.EnergyLVEffected);
         }

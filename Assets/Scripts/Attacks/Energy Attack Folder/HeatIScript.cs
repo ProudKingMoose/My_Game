@@ -10,5 +10,8 @@ public class HeatIScript : BaseAttack
         attackDescription = "A Charge of energy that creates heat making your attack good for cold targets";
         attackDamage = 20;
         energyCost = 20;
+
+        type = BaseClass.EnergyType1.Heat;
+        LV = BaseClass.EnergyLevel.I;
     }
 }

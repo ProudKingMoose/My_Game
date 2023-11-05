@@ -12,4 +12,6 @@ public class BaseAttack : MonoBehaviour
     public float attackDamage; //(BaseDamage + Strength LV) * (1 * EnergyTypeVariable)
     public float energyCost;
 
+    public BaseClass.EnergyType1 type;
+    public BaseClass.EnergyLevel LV;
 }

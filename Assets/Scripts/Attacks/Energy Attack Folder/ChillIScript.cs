@@ -10,5 +10,8 @@ public class ChillIScript : BaseAttack
         attackDescription = "A Charge of energy that creates freezing temperatures that makes your attack good for warm targets";
         attackDamage = 20;
         energyCost = 10;
+
+        type = BaseClass.EnergyType1.Chill;
+        LV = BaseClass.EnergyLevel.I;
     }
 }

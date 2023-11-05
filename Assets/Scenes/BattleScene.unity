@@ -704,6 +704,7 @@ GameObject:
   m_Component:
   - component: {fileID: 772765651}
   - component: {fileID: 772765650}
+  - component: {fileID: 772765652}
   m_Layer: 0
   m_Name: CombatManager
   m_TagString: Untagged
@@ -765,6 +766,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &772765652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772765649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55ce3101f2dc8d44388b6314be0bd92c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1651,6 +1664,7 @@ MonoBehaviour:
     - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
     EnergyAttacks:
     - {fileID: 3298015915098426050, guid: 349d58451438fa546a3bccd924895a33, type: 3}
+    - {fileID: 7390264582323948079, guid: 32f7f2a64322a564b860f1ab96475e43, type: 3}
   currentstate: 0
   Selector: {fileID: 1035443731}
   EnemyTargeted: {fileID: 0}

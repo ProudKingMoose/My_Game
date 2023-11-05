@@ -286,7 +286,7 @@ public class HeroStatemachine : MonoBehaviour
         Debug.Log(calculatedDamage);
 
         FindEnergyCurrentLV();
-        EnemyTargeted.GetComponent<EnemyStateMachine>().TakeDamage(calculatedDamage, hero.currentFusionType, hero.usedFusionLevel);
+        EnemyTargeted.GetComponent<EnemyStateMachine>().TakeDamage(calculatedDamage, hero.currentFusionType, CSM.HandlerList[0].Abilitytype, CSM.HandlerList[0].AbilityLV, hero.usedFusionLevel);
         hero.currentEnergy -= (CSM.HandlerList[0].choosenAttack.energyCost);
         HeroPanelUpdate();
     }

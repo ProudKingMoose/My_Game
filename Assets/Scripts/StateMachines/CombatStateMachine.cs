@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using static BaseClass;
 
 public class CombatStateMachine : MonoBehaviour
 {
@@ -222,14 +223,17 @@ public class CombatStateMachine : MonoBehaviour
         HeroInput = HeroGUI.DONE;
     }
 
-    public void Input3(BaseAttack choosenAbility)
+    public void Input3(BaseAttack choosenAbility, EnergyType1 AbilityType, EnergyLevel AbilityLV)
     {
         ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
         ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
         ChoisefromHero.Type = "Hero";
 
-        selectEnemy = true;
         ChoisefromHero.choosenAttack = choosenAbility;
+        ChoisefromHero.AbilityLV = AbilityLV;
+        ChoisefromHero.Abilitytype = AbilityType;
+
+        selectEnemy = true;
         EnergyPanel.SetActive(false);
     }
 
@@ -354,6 +358,8 @@ public class CombatStateMachine : MonoBehaviour
                 EnergyButtonText.text = energyAbility.name;
                 ActionButton AB = EnergyButton.GetComponent<ActionButton>();
                 AB.AbilityToPerform = energyAbility;
+                AB.Abilitytype = energyAbility.type;//there are problems here that need to be fixed 
+                AB.AbilityLV = energyAbility.LV;
                 EnergyButton.transform.SetParent(EnergySpacer, false);
                 aButtons.Add(EnergyButton);
             }

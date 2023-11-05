@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static BaseClass;
 
 public class ActionButton : MonoBehaviour
 {
     public BaseAttack AbilityToPerform;
     public int ChosenFusionInt;//Change this to a enum value instead of an int value
+    public EnergyType1 Abilitytype;
+    public EnergyLevel AbilityLV;
     public void AbilityCast()
     {
-        GameObject.Find("CombatManager").GetComponent<CombatStateMachine>().Input3(AbilityToPerform);
+        GameObject.Find("CombatManager").GetComponent<CombatStateMachine>().Input3(AbilityToPerform, Abilitytype, AbilityLV);
     }
     public void FusionCast()
     {

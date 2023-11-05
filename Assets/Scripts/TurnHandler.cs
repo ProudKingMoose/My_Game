@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static BaseClass;
 
 [System.Serializable]
 public class TurnHandler
@@ -15,4 +16,6 @@ public class TurnHandler
     public BaseAttack choosenAttack;
 
     public int fusion;
+    public EnergyType1 Abilitytype;
+    public EnergyLevel AbilityLV;
 }
