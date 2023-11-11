@@ -48,12 +48,19 @@ public class HeroStatemachine : MonoBehaviour
     private List<GameObject> attackNames = new List<GameObject>();
     private String attackName;
 
+    public GameObject DamageNummerPanel;
+    public Transform BattleUI;
+    private List<GameObject> DMGText = new List<GameObject>();
+    private float DMGTDuration = 1f;
+    private float CDMGTDuration = 0;
+
     void Start()
     {
         coldownLimit = 1;
         currentColdown = 0;
 
         AttackNameSpacer = GameObject.Find("AttackNameSpacer").GetComponent<Transform>();
+        BattleUI = GameObject.Find("Battle UI").GetComponent<Transform>();
 
         HeroPanelSpacer = GameObject.Find("Battle UI").transform.Find("HeroPanel").transform.Find("HeroPanelSpacer");
         CreateHeroPanel();
@@ -67,6 +74,11 @@ public class HeroStatemachine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CDMGTDuration > 0)
+            CDMGTDuration -= Time.deltaTime;
+        if (CDMGTDuration <= 0)
+            RemoveDMGText();
+
         switch (currentstate)
         {
             case (States.CHECKTURN):
@@ -119,8 +131,13 @@ public class HeroStatemachine : MonoBehaviour
 
                     for (int i = 0; i < CSM.HandlerList.Count; i++)
                     {
-                        if (CSM.HandlerList[i].AttackersGameObject == this.gameObject)
-                            CSM.HandlerList.Remove(CSM.HandlerList[i]);
+                        if (i != 0)
+                        {
+                            if (CSM.HandlerList[i].AttackersGameObject == this.gameObject)
+                                CSM.HandlerList.Remove(CSM.HandlerList[i]);
+                            if (CSM.HandlerList[i].AttackTarget == this.gameObject)
+                                CSM.HandlerList[i].AttackTarget = CSM.Heroes[UnityEngine.Random.Range(0, CSM.Heroes.Count)];
+                        }
                     }
 
                     this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
@@ -240,9 +257,44 @@ public class HeroStatemachine : MonoBehaviour
         }
     }
 
+    void DamageNamePanel(float DMG)
+    {
+        GameObject DNamePanel = Instantiate(DamageNummerPanel) as GameObject;
+        Text DamageNamePanelText = DNamePanel.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        DamageNamePanelText.text = DMG.ToString();
+        DNamePanel.transform.SetParent(BattleUI, false);
+
+        float offsetPosY = this.gameObject.transform.position.y + 1.5f;
+        Vector3 offsetPos = new Vector3(this.gameObject.transform.position.x, offsetPosY, this.gameObject.transform.position.z);
+
+        Vector2 canvasPos;
+        Vector2 screenPoint = Camera.main.WorldToScreenPoint(offsetPos);
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle((RectTransform)BattleUI, screenPoint, null, out canvasPos);
+
+        DNamePanel.transform.localPosition = canvasPos;
+
+        CDMGTDuration = DMGTDuration;
+
+        DMGText.Add(DNamePanel);
+
+    }
+
+    void RemoveDMGText()
+    {
+        foreach (GameObject name in DMGText)
+        {
+            Destroy(name);
+        }
+    }
+
+
     public void TakeDamage(float damageAmount, EnergyType1 effect, EnergyLevel level)
     {
-        hero.currentHP -= damageAmount;
+        float totDMG = damageAmount;
+        DamageNamePanel(totDMG);
+
+        hero.currentHP -= totDMG;
         if (hero.currentHP <= 0)
         {
             hero.currentHP = 0;

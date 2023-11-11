@@ -1673,6 +1673,9 @@ MonoBehaviour:
   AttackNameSpacer: {fileID: 0}
   AttackNamePanel: {fileID: 7175401880436715134, guid: 1623b00f195a971418858082666b0ccb,
     type: 3}
+  DamageNummerPanel: {fileID: 1294402385485854989, guid: 3f6c137dfb89e1a47ac61b02bf06d7e2,
+    type: 3}
+  BattleUI: {fileID: 0}
 --- !u!65 &2037970516
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1907,6 +1910,9 @@ MonoBehaviour:
   AttackNameSpacer: {fileID: 0}
   AttackNamePanel: {fileID: 7175401880436715134, guid: 1623b00f195a971418858082666b0ccb,
     type: 3}
+  DamageNummerPanel: {fileID: 1294402385485854989, guid: 3f6c137dfb89e1a47ac61b02bf06d7e2,
+    type: 3}
+  BattleUI: {fileID: 0}
 --- !u!65 &2100537957
 BoxCollider:
   m_ObjectHideFlags: 0
