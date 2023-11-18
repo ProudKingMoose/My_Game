@@ -1635,20 +1635,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero:
     theName: Calisudos
-    Type1: 4
-    Type1Level: 1
+    Type1: 2
+    Type1Level: 2
     Type2: 5
-    Type2Level: 2
-    baseHP: 200
-    currentHP: 200
+    Type2Level: 3
+    Level:
+      currentLV: 0
+      currentXP: 0
+      MaxXP: 0
+      MaxLV: 0
+    baseHP: 150
+    currentHP: 150
     baseEnergy: 50
     currentEnergy: 50
-    baseDefence: 0
-    currentDefence: 0
-    baseAttackPower: 0
-    currentAttackPower: 0
-    baseEDefence: 3
-    currentEDefence: 3
+    baseDefence: 7
+    currentDefence: 7
+    baseAttackPower: 15
+    currentAttackPower: 15
+    baseEDefence: 0
+    currentEDefence: 0
     baseEAttackPower: 15
     currentEAttackPower: 15
     FusionUses: 0
@@ -1664,7 +1669,6 @@ MonoBehaviour:
     - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
     EnergyAttacks:
     - {fileID: 3298015915098426050, guid: 349d58451438fa546a3bccd924895a33, type: 3}
-    - {fileID: 7390264582323948079, guid: 32f7f2a64322a564b860f1ab96475e43, type: 3}
   currentstate: 0
   Selector: {fileID: 1035443731}
   EnemyTargeted: {fileID: 0}
@@ -1874,21 +1878,26 @@ MonoBehaviour:
   hero:
     theName: Halcalundra
     Type1: 1
-    Type1Level: 3
-    Type2: 3
+    Type1Level: 1
+    Type2: 4
     Type2Level: 1
-    baseHP: 200
-    currentHP: 200
+    Level:
+      currentLV: 0
+      currentXP: 0
+      MaxXP: 0
+      MaxLV: 0
+    baseHP: 150
+    currentHP: 150
     baseEnergy: 50
     currentEnergy: 50
-    baseDefence: 0
-    currentDefence: 0
-    baseAttackPower: 0
-    currentAttackPower: 0
-    baseEDefence: 5
-    currentEDefence: 5
-    baseEAttackPower: 11
-    currentEAttackPower: 11
+    baseDefence: 10
+    currentDefence: 10
+    baseAttackPower: 15
+    currentAttackPower: 15
+    baseEDefence: 0
+    currentEDefence: 0
+    baseEAttackPower: 10
+    currentEAttackPower: 10
     FusionUses: 0
     CurrentFusionTypeInt: 0
     currentFusionType: 0
@@ -1899,9 +1908,10 @@ MonoBehaviour:
     effectDamageHold: 0
     beenEffected: 0
     aviableAttacks:
-    - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
+    - {fileID: 3090086518861621652, guid: f714020c8396d3447bad0bc5db2ef54f, type: 3}
     EnergyAttacks:
     - {fileID: 7390264582323948079, guid: 32f7f2a64322a564b860f1ab96475e43, type: 3}
+    - {fileID: 3298015915098426050, guid: 349d58451438fa546a3bccd924895a33, type: 3}
   currentstate: 0
   Selector: {fileID: 1922510134}
   EnemyTargeted: {fileID: 0}

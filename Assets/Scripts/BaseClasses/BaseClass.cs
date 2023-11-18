@@ -23,10 +23,13 @@ public class BaseClass
         III = 3,
     }
 
+
     public EnergyType1 Type1;
     public EnergyLevel Type1Level;
     public EnergyType1 Type2;
     public EnergyLevel Type2Level;
+
+    public LevelSystem Level;
 
     public float baseHP;
     public float currentHP;

@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
 
     public Vector3 lastHeroPosition, nextHeroPosition;
 
+
+    public List<HeroStatStorage> StatStorage = new List<HeroStatStorage>();
+
     public enum Gamestates
     {
         OverWorld,
@@ -90,7 +93,39 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        
+
+    }
+
+    public void SavePlayerXPStats(string name, int XP, int LV)
+    {
+        bool alreadyInList = false;
+        foreach (HeroStatStorage heroes in StatStorage)
+        {
+            if (heroes.theName == name)
+            {
+                alreadyInList = true;
+                heroes.XP = XP;
+                heroes.level = LV;
+            }
+        }
+        if (!alreadyInList)
+        {
+            HeroStatStorage curHeroStats = new HeroStatStorage();
+            curHeroStats.theName = name;
+            curHeroStats.XP = XP;
+            curHeroStats.level = LV;
+            StatStorage.Add(curHeroStats);
+        }
+    }
+
+    public HeroStatStorage GetPlayerXPStats(string name)
+    {
+        foreach (HeroStatStorage heroes in StatStorage)
+        {
+            if (heroes.theName == name)
+                return heroes;
+        }
+        return null;
     }
 
     void Encounter()

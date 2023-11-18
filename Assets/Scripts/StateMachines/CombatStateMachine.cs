@@ -150,11 +150,11 @@ public class CombatStateMachine : MonoBehaviour
                 }
                 else 
                 {
-                    Debug.Log("Doing This?");
                     ClearAttackPanel();
                     HeroInput = HeroGUI.ACTIVATE;
                 }
-            break;
+                
+                break;
 
             case (Action.LOSE):
                 Debug.Log("YOU LOSE");
@@ -164,6 +164,10 @@ public class CombatStateMachine : MonoBehaviour
                 for (int i = 0; i < Heroes.Count; i++)
                 {
                     Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
+                }
+                foreach (var Hero in Heroes)
+                {
+                    GameManager.instance.SavePlayerXPStats(Hero.GetComponent<HeroStatemachine>().hero.theName, Hero.GetComponent<HeroStatemachine>().hero.Level.currentXP, Hero.GetComponent<HeroStatemachine>().hero.Level.currentLV);
                 }
                 GameManager.instance.LoadSceneAfterBattle();
                 GameManager.instance.state = GameManager.Gamestates.OverWorld;
@@ -178,8 +182,8 @@ public class CombatStateMachine : MonoBehaviour
                 if (HerosReadyToAttack.Count > 0)
                 {
 
-                    HerosReadyToAttack[0].transform.Find("Selector").gameObject.SetActive (true);
-                    ChoisefromHero = new TurnHandler ();
+                    HerosReadyToAttack[0].transform.Find("Selector").gameObject.SetActive(true);
+                    ChoisefromHero = new TurnHandler();
 
                     ActionPanel.SetActive(true);
                     CreateAttackButtons();

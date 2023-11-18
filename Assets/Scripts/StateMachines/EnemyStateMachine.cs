@@ -129,15 +129,15 @@ public class EnemyStateMachine : MonoBehaviour
                             if (CSM.HandlerList[i].AttackersGameObject == this.gameObject)
                                 CSM.HandlerList.Remove(CSM.HandlerList[i]);
                             if (CSM.HandlerList[i].AttackTarget == this.gameObject)
-                                CSM.HandlerList[i].AttackTarget = CSM.Enemies[UnityEngine.Random.Range(0,CSM.Enemies.Count)];
+                                CSM.HandlerList[i].AttackTarget = CSM.Enemies[UnityEngine.Random.Range(0, CSM.Enemies.Count)];
                         }
                     }
 
                     this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
 
-                    CSM.battleState = CombatStateMachine.Action.ALIVECONTROL;
-
                     alive = false;
+
+                    CSM.battleState = CombatStateMachine.Action.ALIVECONTROL;
                 }
                 break;
         }
@@ -215,7 +215,7 @@ public class EnemyStateMachine : MonoBehaviour
         }
     }
 
-    void DamageNamePanel(float DMG, float Vantage)
+    void DamageNamePanel(float DMG, float Vantage, float FVantage)
     {
         GameObject DNamePanel = Instantiate(DamageNummerPanel) as GameObject;
         Text DamageNamePanelText = DNamePanel.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
@@ -224,6 +224,10 @@ public class EnemyStateMachine : MonoBehaviour
             DamageNamePanelText.color = Color.red;
         else if (Vantage < 1.0)
             DamageNamePanelText.color= Color.blue;
+        if (FVantage > 1.0)
+            DamageNamePanelText.color = Color.red;
+        else if (FVantage < 1.0)
+            DamageNamePanelText.color = Color.blue;
 
         DNamePanel.transform.SetParent(BattleUI, false);
 
@@ -273,21 +277,23 @@ public class EnemyStateMachine : MonoBehaviour
     {
         float typeVantage = calculate.GetEffectivness(AbilityType, enemy.Type1, AbiilityLV) * calculate.GetEffectivness(AbilityType, enemy.Type2, AbiilityLV);
 
-        float totDMG = damageAmount * typeVantage;
+        float FusionVantage = calculate.GetEffectivness(fusionEffect, enemy.Type1, FusionLV) * calculate.GetEffectivness(fusionEffect, enemy.Type2, FusionLV);
+
+        float totDMG = damageAmount * typeVantage * FusionVantage;
         enemy.currentHP -= totDMG;
 
-        DamageNamePanel(totDMG, typeVantage);
-        if (enemy.currentHP < 0)
-        {
-            enemy.currentHP = 0;
-            currentstate = States.DEAD;
-        }
+        DamageNamePanel(totDMG, typeVantage, FusionVantage);
         if (fusionEffect != EnergyType1.None)
         {
             enemy.EnergyEffectedType = fusionEffect;
             enemy.EnergyLVEffected = FusionLV;
             enemy.beenEffected = true;
             Debug.Log(enemy.beenEffected + "effected by" + enemy.EnergyEffectedType + " " + enemy.EnergyLVEffected);
+        }
+        if (enemy.currentHP <= 0)
+        {
+            enemy.currentHP = 0;
+            currentstate = States.DEAD;
         }
     }
 
@@ -298,19 +304,19 @@ public class EnemyStateMachine : MonoBehaviour
         float totDMG = (heroEPower - enemy.currentEDefence) * DMGMult;
         if (totDMG < 0)
             totDMG = 0;
-        DamageNamePanel(totDMG, 1.0f);
+        DamageNamePanel(totDMG, 1.0f, 1.0f);
         enemy.currentHP -= totDMG;
         enemy.effectDamageHold--;
+
+        Debug.Log(totDMG + " Damage was done to " + enemy.theName);
+        if (enemy.effectDamageHold == 0)
+            enemy.beenEffected = false;
 
         if (enemy.currentHP < 0)
         {
             enemy.currentHP = 0;
             currentstate = States.DEAD;
         }
-
-        Debug.Log(totDMG + " Damage was done to " + enemy.theName);
-        if (enemy.effectDamageHold == 0)
-            enemy.beenEffected = false;
     }
     void DoDamage()
     {

@@ -1,18 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.PlasticSCM.Editor.WebApi;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static BaseClass;
-using static CombatStateMachine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class HeroStatemachine : MonoBehaviour
 {
     private CombatStateMachine CSM;
     public BaseHero hero;
+
+
 
     public enum States
     {
@@ -54,8 +52,22 @@ public class HeroStatemachine : MonoBehaviour
     private float DMGTDuration = 1f;
     private float CDMGTDuration = 0;
 
-    void Start()
+
+void Start()
     {
+        hero.Level = new LevelSystem(OnLevelUp);
+        if (GameManager.instance.GetPlayerXPStats(hero.theName) == null)
+        {
+            Debug.Log(GameManager.instance.GetPlayerXPStats(hero.theName));
+            hero.Level.currentLV = 1;
+            hero.Level.currentXP = 0;
+        }
+        else
+        {
+            hero.Level.currentLV = GameManager.instance.GetPlayerXPStats(hero.theName).level;
+            hero.Level.currentXP = GameManager.instance.GetPlayerXPStats(hero.theName).XP;
+        }
+
         coldownLimit = 1;
         currentColdown = 0;
 
@@ -69,6 +81,11 @@ public class HeroStatemachine : MonoBehaviour
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
         currentstate = States.CHECKTURN;
         startPosition = transform.position;
+    }
+
+    public void OnLevelUp()
+    {
+        print("I Level Up");
     }
 
     // Update is called once per frame
