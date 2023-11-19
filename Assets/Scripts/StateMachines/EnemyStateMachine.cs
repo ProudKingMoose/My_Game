@@ -118,6 +118,8 @@ public class EnemyStateMachine : MonoBehaviour
 
                     CSM.Enemies.Remove(this.gameObject);
 
+                    CSM.DeadEnemies.Add(this.gameObject);
+
                     Selector.SetActive(false);
 
                     CSM.ActionPanel.SetActive(false);

@@ -125,6 +125,11 @@ MonoBehaviour:
     Type1Level: 0
     Type2: 0
     Type2Level: 0
+    Level:
+      currentLV: 0
+      currentXP: 0
+      MaxXP: 0
+      MaxLV: 0
     baseHP: 50
     currentHP: 50
     baseEnergy: 50
@@ -149,6 +154,7 @@ MonoBehaviour:
     aviableAttacks:
     - {fileID: 738380538214480900, guid: 4b12ffd7a20ff2843b309bb47038450c, type: 3}
     - {fileID: 3090086518861621652, guid: f714020c8396d3447bad0bc5db2ef54f, type: 3}
+    XPValue: 20
   currentstate: 1
   Selector: {fileID: 8602518254165201815}
   HeroTargeted: {fileID: 0}

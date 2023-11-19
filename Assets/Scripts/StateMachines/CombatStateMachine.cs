@@ -31,6 +31,7 @@ public class CombatStateMachine : MonoBehaviour
     public List<TurnHandler> HandlerList = new List<TurnHandler>();
     public List<GameObject> Heroes = new List<GameObject>();
     public List<GameObject> Enemies = new List<GameObject>();
+    public List<GameObject> DeadEnemies = new List<GameObject>();
 
     [SerializeField]
     public LayerMask interactableLayer;
@@ -167,6 +168,7 @@ public class CombatStateMachine : MonoBehaviour
                 }
                 foreach (var Hero in Heroes)
                 {
+                    Hero.GetComponent<HeroStatemachine>().hero.Level.AddXP(XPFromBattle());
                     GameManager.instance.SavePlayerXPStats(Hero.GetComponent<HeroStatemachine>().hero.theName, Hero.GetComponent<HeroStatemachine>().hero.Level.currentXP, Hero.GetComponent<HeroStatemachine>().hero.Level.currentLV);
                 }
                 GameManager.instance.LoadSceneAfterBattle();
@@ -206,6 +208,17 @@ public class CombatStateMachine : MonoBehaviour
     public void TakeActions(TurnHandler action)
     {
         HandlerList.Add(action);
+    }
+
+    private int XPFromBattle()
+    {
+        int XP = 0;
+
+        foreach (GameObject Enemy in DeadEnemies)
+        {
+            XP += Enemy.GetComponent<EnemyStateMachine>().enemy.XPValue;
+        }
+        return XP;
     }
 
     //The Button To Do A Melee Attack

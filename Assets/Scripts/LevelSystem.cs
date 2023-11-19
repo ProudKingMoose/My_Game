@@ -59,7 +59,8 @@ public class LevelSystem
 
     public bool AddXP(int amountOfXP)
     {
-        if (amountOfXP + currentXP < 0 || currentXP < MaxXP)
+        Debug.Log("Activated");
+        if (amountOfXP + currentXP < 0 || currentXP > MaxXP)
         {
             if (currentXP > MaxXP)
                 currentXP = MaxXP;
@@ -67,6 +68,7 @@ public class LevelSystem
         }
         int oldLV = GetLevelForXP(currentXP);
         currentXP += amountOfXP;
+        Debug.Log(currentXP);
         if (oldLV < GetLevelForXP(currentXP))
         {
             if (currentLV < GetLevelForXP(currentXP))

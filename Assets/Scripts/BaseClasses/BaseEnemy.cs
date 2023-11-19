@@ -5,5 +5,5 @@ using UnityEngine;
 [System.Serializable]
 public class BaseEnemy: BaseClass
 {
-
+    public int XPValue;
 }
