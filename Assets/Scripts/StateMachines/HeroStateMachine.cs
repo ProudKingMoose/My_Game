@@ -56,17 +56,14 @@ public class HeroStatemachine : MonoBehaviour
 void Start()
     {
         hero.Level = new LevelSystem(OnLevelUp);
-        if (GameManager.instance.GetPlayerXPStats(hero.theName) == null)
+        if (GameManager.instance.GetPlayerStats(hero.theName) == null)
         {
-            Debug.Log(GameManager.instance.GetPlayerXPStats(hero.theName));
+            Debug.Log(GameManager.instance.GetPlayerStats(hero.theName));
             hero.Level.currentLV = 1;
             hero.Level.currentXP = 0;
         }
         else
-        {
-            hero.Level.currentLV = GameManager.instance.GetPlayerXPStats(hero.theName).level;
-            hero.Level.currentXP = GameManager.instance.GetPlayerXPStats(hero.theName).XP;
-        }
+            StatCorrector();
 
         coldownLimit = 1;
         currentColdown = 0;
@@ -83,9 +80,31 @@ void Start()
         startPosition = transform.position;
     }
 
+    void StatCorrector()
+    {
+        HeroStatStorage storedData = GameManager.instance.GetPlayerStats(hero.theName);
+        hero.Level.currentLV = storedData.level;
+        hero.Level.currentXP = storedData.XP;
+
+        hero.currentHP = storedData.currentHP;
+        hero.baseHP = storedData.baseHP;
+        hero.currentEnergy = storedData.currentEnergy;
+        hero.baseEnergy = storedData.baseEnergy;
+
+        hero.baseDefence = storedData.baseDefence;
+        hero.baseAttackPower = storedData.baseAttackPower;
+        hero.baseEDefence = storedData.baseEDefence;
+        hero.baseEAttackPower = storedData.baseEAttackPower;
+
+        hero.Type1Level = storedData.Type1Level;
+        hero.Type2Level = storedData.Type2Level;
+
+        hero.EnergyAttacks = storedData.EnergyAttacks;
+    }
+
     public void OnLevelUp()
     {
-        print("I Level Up");
+        Debug.Log("I Level Up");
     }
 
     // Update is called once per frame
@@ -482,5 +501,10 @@ void Start()
                 damageMult = 2;
                 break;
         }
+    }
+
+    void LevelStatsAlgorithm()
+    {
+
     }
 }

@@ -25,6 +25,7 @@ public class MovementScript : MonoBehaviour
         transform.position = GameManager.instance.nextHeroPosition;
     }
 
+
     void Update()
     {
         Inputs();

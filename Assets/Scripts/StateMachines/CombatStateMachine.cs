@@ -69,15 +69,25 @@ public class CombatStateMachine : MonoBehaviour
 
     //spawnPoints
     public List<Transform> spawnPoints = new List<Transform>();
+    public List<Transform> HeroPositions = new List<Transform>();
 
     private void Awake()
     {
+        int pos = 0;
         for (int i = 0; i < GameManager.instance.amountOfEnemies; i++)
         {
             GameObject NewEnemy = Instantiate(GameManager.instance.enemiesToBattle[i], spawnPoints[i].position, Quaternion.identity) as GameObject;
             NewEnemy.name = NewEnemy.GetComponent<EnemyStateMachine>().enemy.theName+"_" + i;
             NewEnemy.GetComponent<EnemyStateMachine>().enemy.theName = NewEnemy.name;
             Enemies.Add(NewEnemy);
+        }
+        foreach (GameObject hero in GameManager.instance.heroesToBattle)
+        {
+            GameObject NewHero = Instantiate(hero, HeroPositions[pos].position, Quaternion.identity) as GameObject;
+            NewHero.name = NewHero.GetComponent<HeroStatemachine>().hero.theName;
+            NewHero.GetComponent<HeroStatemachine>().hero.theName = NewHero.name;
+            Heroes.Add(NewHero);
+            pos++;
         }
     }
     void Start()
@@ -88,7 +98,7 @@ public class CombatStateMachine : MonoBehaviour
         selectEnemy = false;
         battleState = Action.WAIT;
         //Enemies.AddRange(GameObject.FindGameObjectsWithTag ("Enemy"));
-        Heroes.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
+        //Heroes.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
 
         HeroInput = HeroGUI.ACTIVATE;
         ActionPanel.SetActive (false);
@@ -166,11 +176,7 @@ public class CombatStateMachine : MonoBehaviour
                 {
                     Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
                 }
-                foreach (var Hero in Heroes)
-                {
-                    Hero.GetComponent<HeroStatemachine>().hero.Level.AddXP(XPFromBattle());
-                    GameManager.instance.SavePlayerXPStats(Hero.GetComponent<HeroStatemachine>().hero.theName, Hero.GetComponent<HeroStatemachine>().hero.Level.currentXP, Hero.GetComponent<HeroStatemachine>().hero.Level.currentLV);
-                }
+                SaveStats();
                 GameManager.instance.LoadSceneAfterBattle();
                 GameManager.instance.state = GameManager.Gamestates.OverWorld;
                 GameManager.instance.enemiesToBattle.Clear();
@@ -208,6 +214,19 @@ public class CombatStateMachine : MonoBehaviour
     public void TakeActions(TurnHandler action)
     {
         HandlerList.Add(action);
+    }
+
+    private void SaveStats()
+    {
+        foreach (var Hero in Heroes)
+        {
+            Hero.GetComponent<HeroStatemachine>().hero.Level.AddXP(XPFromBattle());
+            GameManager.instance.SavePlayerStats(Hero.GetComponent<HeroStatemachine>().hero.theName, Hero.GetComponent<HeroStatemachine>().hero.Level.currentXP,
+                Hero.GetComponent<HeroStatemachine>().hero.Level.currentLV, Hero.GetComponent<HeroStatemachine>().hero.Type1, Hero.GetComponent<HeroStatemachine>().hero.Type2, Hero.GetComponent<HeroStatemachine>().hero.Type1Level, Hero.GetComponent<HeroStatemachine>().hero.Type2Level,
+                Hero.GetComponent<HeroStatemachine>().hero.baseHP, Hero.GetComponent<HeroStatemachine>().hero.currentHP, Hero.GetComponent<HeroStatemachine>().hero.baseEnergy, Hero.GetComponent<HeroStatemachine>().hero.currentEnergy,
+                Hero.GetComponent<HeroStatemachine>().hero.baseDefence, Hero.GetComponent<HeroStatemachine>().hero.baseAttackPower, Hero.GetComponent<HeroStatemachine>().hero.baseEDefence, Hero.GetComponent<HeroStatemachine>().hero.baseAttackPower,
+                Hero.GetComponent<HeroStatemachine>().hero.EnergyAttacks);
+        }
     }
 
     private int XPFromBattle()

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8859149190387438143}
-  - component: {fileID: 628682666711101813}
+  - component: {fileID: 1655168232983533371}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &628682666711101813
+--- !u!114 &1655168232983533371
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,4 +56,8 @@ MonoBehaviour:
   enemiesToBattle: []
   lastHeroPosition: {x: 0, y: 0, z: 0}
   nextHeroPosition: {x: 0, y: 0, z: 0}
+  StatStorage: []
+  HeroesUnlocked:
+  - {fileID: 7855144873475545148, guid: 341e86cd3099e324ebfbb1adc9bed33e, type: 3}
+  - {fileID: 1721506919101003851, guid: 47fe41656561479459417e876cf2d75e, type: 3}
   state: 0

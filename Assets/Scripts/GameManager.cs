@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static BaseClass;
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject heroCharacter;
 
+
     public string sceneToLoad;
     public string lastScene;
 
@@ -22,11 +24,13 @@ public class GameManager : MonoBehaviour
 
     public int amountOfEnemies;
     public List<GameObject> enemiesToBattle = new List<GameObject>();
+    public List<GameObject> heroesToBattle = new List<GameObject>();
 
     public Vector3 lastHeroPosition, nextHeroPosition;
 
 
     public List<HeroStatStorage> StatStorage = new List<HeroStatStorage>();
+    public List<GameObject> HeroesUnlocked = new List<GameObject>();
 
     public enum Gamestates
     {
@@ -37,7 +41,6 @@ public class GameManager : MonoBehaviour
     }
 
     public Gamestates state;
-
 
     public void LoadSceneAfterBattle()
     {
@@ -74,6 +77,8 @@ public class GameManager : MonoBehaviour
 
                 break;
         }
+        if (StatStorage.Count == 0)
+            FirstStatStor();
     }
 
     void Awake()
@@ -96,7 +101,20 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void SavePlayerXPStats(string name, int XP, int LV)
+    public void FirstStatStor()
+    {
+        foreach (GameObject Hero in HeroesUnlocked)
+        {
+            HeroStatemachine HSM = Hero.GetComponent<HeroStatemachine>();
+            GameManager.instance.SavePlayerStats(HSM.hero.theName, HSM.hero.Level.currentXP,
+                HSM.hero.Level.currentLV, HSM.hero.Type1, HSM.hero.Type2, HSM.hero.Type1Level, HSM.hero.Type2Level,
+                HSM.hero.baseHP, HSM.hero.currentHP, HSM.hero.baseEnergy, HSM.hero.currentEnergy,
+                HSM.hero.baseDefence, HSM.hero.baseAttackPower, HSM.hero.baseEDefence, HSM.hero.baseAttackPower,
+                HSM.hero.EnergyAttacks);
+        }
+    }
+
+    public void SavePlayerStats(string name, int XP, int LV, EnergyType1 Element1, EnergyType1 Element2, EnergyLevel Element1LV, EnergyLevel Element2LV, float baseHP, float curHP, float baseE, float curE, float baseDef, float baseAP, float baseED, float baseEAP, List<BaseAttack> energyAttacks)
     {
         bool alreadyInList = false;
         foreach (HeroStatStorage heroes in StatStorage)
@@ -106,6 +124,23 @@ public class GameManager : MonoBehaviour
                 alreadyInList = true;
                 heroes.XP = XP;
                 heroes.level = LV;
+
+                heroes.Type1 = Element1;
+                heroes.Type2 = Element2;
+                heroes.Type1Level = Element1LV;
+                heroes.Type2Level = Element2LV;
+
+                heroes.baseHP = baseHP;
+                heroes.currentHP = curHP;
+                heroes.baseEnergy = baseE;
+                heroes.currentEnergy = curE;
+
+                heroes.baseDefence = baseDef;
+                heroes.baseAttackPower = baseAP;
+                heroes.baseEDefence = baseED;
+                heroes.baseAttackPower = baseEAP;
+
+                heroes.EnergyAttacks = energyAttacks;
             }
         }
         if (!alreadyInList)
@@ -114,11 +149,29 @@ public class GameManager : MonoBehaviour
             curHeroStats.theName = name;
             curHeroStats.XP = XP;
             curHeroStats.level = LV;
+
+            curHeroStats.Type1 = Element1;
+            curHeroStats.Type2 = Element2;
+            curHeroStats.Type1Level = Element1LV;
+            curHeroStats.Type2Level = Element2LV;
+
+            curHeroStats.baseHP = baseHP;
+            curHeroStats.currentHP = curHP;
+            curHeroStats.baseEnergy = baseE;
+            curHeroStats.currentEnergy = curE;
+
+            curHeroStats.baseDefence = baseDef;
+            curHeroStats.baseAttackPower = baseAP;
+            curHeroStats.baseEDefence = baseED;
+            curHeroStats.baseAttackPower = baseEAP;
+
+            curHeroStats.EnergyAttacks = energyAttacks;
+
             StatStorage.Add(curHeroStats);
         }
     }
 
-    public HeroStatStorage GetPlayerXPStats(string name)
+    public HeroStatStorage GetPlayerStats(string name)
     {
         foreach (HeroStatStorage heroes in StatStorage)
         {
