@@ -32,6 +32,7 @@ public class CombatStateMachine : MonoBehaviour
     public List<GameObject> Heroes = new List<GameObject>();
     public List<GameObject> Enemies = new List<GameObject>();
     public List<GameObject> DeadEnemies = new List<GameObject>();
+    public List<GameObject> DeadHeroes = new List<GameObject>();
 
     [SerializeField]
     public LayerMask interactableLayer;
@@ -221,11 +222,22 @@ public class CombatStateMachine : MonoBehaviour
         foreach (var Hero in Heroes)
         {
             Hero.GetComponent<HeroStatemachine>().hero.Level.AddXP(XPFromBattle());
-            GameManager.instance.SavePlayerStats(Hero.GetComponent<HeroStatemachine>().hero.theName, Hero.GetComponent<HeroStatemachine>().hero.Level.currentXP,
-                Hero.GetComponent<HeroStatemachine>().hero.Level.currentLV, Hero.GetComponent<HeroStatemachine>().hero.Type1, Hero.GetComponent<HeroStatemachine>().hero.Type2, Hero.GetComponent<HeroStatemachine>().hero.Type1Level, Hero.GetComponent<HeroStatemachine>().hero.Type2Level,
-                Hero.GetComponent<HeroStatemachine>().hero.baseHP, Hero.GetComponent<HeroStatemachine>().hero.currentHP, Hero.GetComponent<HeroStatemachine>().hero.baseEnergy, Hero.GetComponent<HeroStatemachine>().hero.currentEnergy,
-                Hero.GetComponent<HeroStatemachine>().hero.baseDefence, Hero.GetComponent<HeroStatemachine>().hero.baseAttackPower, Hero.GetComponent<HeroStatemachine>().hero.baseEDefence, Hero.GetComponent<HeroStatemachine>().hero.baseAttackPower,
-                Hero.GetComponent<HeroStatemachine>().hero.EnergyAttacks);
+            Hero.GetComponent<HeroStatemachine>().hero.Level.XPToNextLevel = Hero.GetComponent<HeroStatemachine>().hero.Level.GetXPForLevel(Hero.GetComponent<HeroStatemachine>().hero.Level.currentLV);
+            BaseHero HSM = Hero.GetComponent<HeroStatemachine>().hero;
+            GameManager.instance.SavePlayerStats(HSM.theName, HSM.Level.currentXP,
+                HSM.Level.currentLV, HSM.Level.XPToNextLevel, HSM.Type1, HSM.Type2, HSM.Type1Level, HSM.Type2Level,
+                HSM.baseHP, HSM.currentHP, HSM.baseEnergy, HSM.currentEnergy,
+                HSM.baseDefence, HSM.baseAttackPower, HSM.baseEDefence, HSM.baseAttackPower,
+                HSM.EnergyAttacks);
+        }
+        foreach (var DeadHero in DeadHeroes)
+        {
+            BaseHero HSM = DeadHero.GetComponent<HeroStatemachine>().hero;
+            GameManager.instance.SavePlayerStats(HSM.theName, HSM.Level.currentXP,
+                HSM.Level.currentLV, HSM.Level.XPToNextLevel, HSM.Type1, HSM.Type2, HSM.Type1Level, HSM.Type2Level,
+                HSM.baseHP, HSM.currentHP, HSM.baseEnergy, HSM.currentEnergy,
+                HSM.baseDefence, HSM.baseAttackPower, HSM.baseEDefence, HSM.baseAttackPower,
+                HSM.EnergyAttacks);
         }
     }
 

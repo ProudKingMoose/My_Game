@@ -7,10 +7,11 @@ using static Cinemachine.DocumentationSortingAttribute;
 [System.Serializable]
 public class LevelSystem
 {
-    public int currentLV = 0;
+    public int currentLV = 1;
     public int currentXP = 0;
     public int MaxXP;
     public int MaxLV = 99;
+    public int XPToNextLevel;
     public Action OnLevelUp;
     public LevelSystem(Action onLevelUp)
     {

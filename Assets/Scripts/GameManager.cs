@@ -105,16 +105,16 @@ public class GameManager : MonoBehaviour
     {
         foreach (GameObject Hero in HeroesUnlocked)
         {
-            HeroStatemachine HSM = Hero.GetComponent<HeroStatemachine>();
-            GameManager.instance.SavePlayerStats(HSM.hero.theName, HSM.hero.Level.currentXP,
-                HSM.hero.Level.currentLV, HSM.hero.Type1, HSM.hero.Type2, HSM.hero.Type1Level, HSM.hero.Type2Level,
-                HSM.hero.baseHP, HSM.hero.currentHP, HSM.hero.baseEnergy, HSM.hero.currentEnergy,
-                HSM.hero.baseDefence, HSM.hero.baseAttackPower, HSM.hero.baseEDefence, HSM.hero.baseAttackPower,
-                HSM.hero.EnergyAttacks);
+            BaseHero HSM = Hero.GetComponent<HeroStatemachine>().hero;
+            GameManager.instance.SavePlayerStats(HSM.theName, HSM.Level.currentXP,
+                HSM.Level.currentLV, HSM.Level.XPToNextLevel,HSM.Type1, HSM.Type2, HSM.Type1Level, HSM.Type2Level,
+                HSM.baseHP, HSM.currentHP, HSM.baseEnergy, HSM.currentEnergy,
+                HSM.baseDefence, HSM.baseAttackPower, HSM.baseEDefence, HSM.baseAttackPower,
+                HSM.EnergyAttacks);
         }
     }
 
-    public void SavePlayerStats(string name, int XP, int LV, EnergyType1 Element1, EnergyType1 Element2, EnergyLevel Element1LV, EnergyLevel Element2LV, float baseHP, float curHP, float baseE, float curE, float baseDef, float baseAP, float baseED, float baseEAP, List<BaseAttack> energyAttacks)
+    public void SavePlayerStats(string name, int XP, int LV, int XPNextLV, EnergyType1 Element1, EnergyType1 Element2, EnergyLevel Element1LV, EnergyLevel Element2LV, float baseHP, float curHP, float baseE, float curE, float baseDef, float baseAP, float baseED, float baseEAP, List<BaseAttack> energyAttacks)
     {
         bool alreadyInList = false;
         foreach (HeroStatStorage heroes in StatStorage)
@@ -124,6 +124,7 @@ public class GameManager : MonoBehaviour
                 alreadyInList = true;
                 heroes.XP = XP;
                 heroes.level = LV;
+                heroes.XPToNextLevel = XPNextLV;
 
                 heroes.Type1 = Element1;
                 heroes.Type2 = Element2;

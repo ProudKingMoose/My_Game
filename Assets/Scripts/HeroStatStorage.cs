@@ -9,6 +9,7 @@ public class HeroStatStorage
     public string theName;
     public int level;
     public int XP;
+    public int XPToNextLevel;
 
     public EnergyType1 Type1;
     public EnergyLevel Type1Level;

@@ -53,17 +53,9 @@ public class HeroStatemachine : MonoBehaviour
     private float CDMGTDuration = 0;
 
 
-void Start()
+    void Start()
     {
         hero.Level = new LevelSystem(OnLevelUp);
-        if (GameManager.instance.GetPlayerStats(hero.theName) == null)
-        {
-            Debug.Log(GameManager.instance.GetPlayerStats(hero.theName));
-            hero.Level.currentLV = 1;
-            hero.Level.currentXP = 0;
-        }
-        else
-            StatCorrector();
 
         coldownLimit = 1;
         currentColdown = 0;
@@ -79,12 +71,17 @@ void Start()
         currentstate = States.CHECKTURN;
         startPosition = transform.position;
     }
+    private void Awake()
+    {
+        StatCorrector();
+    }
 
     void StatCorrector()
     {
         HeroStatStorage storedData = GameManager.instance.GetPlayerStats(hero.theName);
         hero.Level.currentLV = storedData.level;
         hero.Level.currentXP = storedData.XP;
+        hero.Level.XPToNextLevel = hero.Level.GetXPForLevel(hero.Level.currentLV);
 
         hero.currentHP = storedData.currentHP;
         hero.baseHP = storedData.baseHP;
@@ -160,6 +157,8 @@ void Start()
                     CSM.HerosReadyToAttack.Remove(this.gameObject);
 
                     CSM.Heroes.Remove(this.gameObject);
+
+                    CSM.DeadHeroes.Add(this.gameObject);
 
                     Selector.SetActive(false);
 

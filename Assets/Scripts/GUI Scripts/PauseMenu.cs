@@ -13,17 +13,24 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject pauseMenuUI;
     public GameObject partyMenuUI;
+    public GameObject statMenuUI;
 
     public GameObject HeroStatusPanel;
     public GameObject HeroTeamButton;
+    public GameObject HeroNamePanelStat;
 
     public Transform InPartySpacer;
+    public Transform HeroStatsSpacer;
+    
     public Transform AvialableHeroesSpacer;
+    public Transform UnlockedHeroesStatSpacer;
+
     public Transform PartyUIHeroDisplayer;
     public Transform PauseUIHeroDisplayer;
 
     private List<GameObject> HeroStatusPanelsDisplayed = new List<GameObject>();
     private List<GameObject> HeroInTeamPanels = new List<GameObject>();
+    private List<GameObject> HeroStatsDisplayed = new List<GameObject>();
 
     // Update is called once per frame
     void Update()
@@ -73,6 +80,15 @@ public class PauseMenu : MonoBehaviour
         partyMenuUI.SetActive(true);
         RemoveTeamPanels();
         if (InPartySpacer.transform.childCount == 0 && AvialableHeroesSpacer.transform.childCount == 0)
+            CreateTeamButtons();
+    }
+
+    public void StatUI()
+    {
+        pauseMenuUI.SetActive(false);
+        statMenuUI.SetActive(true);
+        RemoveTeamPanels();
+        if (UnlockedHeroesStatSpacer.transform.childCount == 0)
             CreateTeamButtons();
     }
 
@@ -180,11 +196,52 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    public void HoverDisplayHeroStats(string HeroName)
+    {
+        foreach (HeroStatStorage Hero in GameManager.instance.StatStorage)
+        {
+            if (Hero.theName == HeroName)
+            {
+                TextMeshProUGUI LV = HeroStatsSpacer.Find("LVContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                LV.text = Hero.level.ToString();
+                TextMeshProUGUI XP = HeroStatsSpacer.Find("XPContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                XP.text = Hero.XP.ToString();
+                TextMeshProUGUI NextLV = HeroStatsSpacer.Find("NextLVXPContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                NextLV.text = Hero.XPToNextLevel.ToString();
+
+                TextMeshProUGUI HP = HeroStatsSpacer.Find("HealthContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                HP.text = Hero.currentHP.ToString() + "/" + Hero.baseHP;
+                TextMeshProUGUI En = HeroStatsSpacer.Find("EnergyContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                En.text = Hero.currentEnergy.ToString() + "/" + Hero.baseEnergy;
+
+                TextMeshProUGUI E1 = HeroStatsSpacer.Find("Element1Container").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                E1.text = Hero.Type1.ToString() + " " + Hero.Type1Level;
+                TextMeshProUGUI E2 = HeroStatsSpacer.Find("Element2Container").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                E2.text = Hero.Type2.ToString() + " " + Hero.Type2Level;
+
+                TextMeshProUGUI DF = HeroStatsSpacer.Find("DefenceContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                DF.text = Hero.baseDefence.ToString();
+                TextMeshProUGUI AP = HeroStatsSpacer.Find("AttackContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                AP.text = Hero.baseAttackPower.ToString();
+                TextMeshProUGUI EDF = HeroStatsSpacer.Find("EDefenceContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                EDF.text = Hero.baseEDefence.ToString();
+                TextMeshProUGUI EAP = HeroStatsSpacer.Find("EAttackContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+                EAP.text = Hero.baseEAttackPower.ToString();
+            }
+        }
+    }
+
     void ExitUI()
     {
         if (partyMenuUI.activeSelf)
         {
             partyMenuUI.SetActive(false);
+            pauseMenuUI.SetActive(true);
+            TeamPanelUpdate();
+        }
+        else if (statMenuUI.activeSelf)
+        {
+            statMenuUI.SetActive(false);
             pauseMenuUI.SetActive(true);
             TeamPanelUpdate();
         }
@@ -205,18 +262,32 @@ public class PauseMenu : MonoBehaviour
     {
         foreach (HeroStatStorage Hero in GameManager.instance.StatStorage)
         {
-            GameObject HeroButton = Instantiate(HeroTeamButton) as GameObject;
-            TextMeshProUGUI HeroButtonText = HeroButton.transform.Find("TextMeshPro").gameObject.GetComponent<TextMeshProUGUI>();
+            if (partyMenuUI.activeSelf)
+            {
+                GameObject HeroButton = Instantiate(HeroTeamButton) as GameObject;
+                TextMeshProUGUI HeroButtonText = HeroButton.transform.Find("TextMeshPro").gameObject.GetComponent<TextMeshProUGUI>();
 
-            HeroTeamButton HTB = HeroButton.GetComponent<HeroTeamButton>();
-            HTB.theButton = HeroButton;
-            HTB.HeroName = Hero.theName;
+                HeroTeamButton HTB = HeroButton.GetComponent<HeroTeamButton>();
+                HTB.theButton = HeroButton;
+                HTB.HeroName = Hero.theName;
 
-            HeroButtonText.text = Hero.theName;
-            if (Hero.inParty)
-                HeroButton.transform.SetParent(InPartySpacer, false);
-            if (!Hero.inParty)
-                HeroButton.transform.SetParent(AvialableHeroesSpacer, false);
+                HeroButtonText.text = Hero.theName;
+                if (Hero.inParty)
+                    HeroButton.transform.SetParent(InPartySpacer, false);
+                if (!Hero.inParty)
+                    HeroButton.transform.SetParent(AvialableHeroesSpacer, false);
+            }
+            else if (statMenuUI.activeSelf)
+            {
+                GameObject HeroButton = Instantiate(HeroNamePanelStat) as GameObject;
+                TextMeshProUGUI HeroButtonText = HeroButton.transform.Find("TextMeshPro").gameObject.GetComponent<TextMeshProUGUI>();
+
+                HeroTeamButton HTB = HeroButton.GetComponent<HeroTeamButton>();
+                HTB.HeroName = Hero.theName;
+
+                HeroButtonText.text = Hero.theName;
+                HeroButton.transform.SetParent(UnlockedHeroesStatSpacer, false);
+            }
         }
     }
 }
