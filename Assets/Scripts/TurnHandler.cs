@@ -14,6 +14,8 @@ public class TurnHandler
 
     public GameObject AttackTarget;
     public BaseAttack choosenAttack;
+    public RestoreObject choosenItem;
+    public GameObject BuffTarget;
 
     public int fusion;
     public EnergyType1 Abilitytype;

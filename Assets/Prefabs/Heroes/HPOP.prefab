@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3604600495977686448}
   - component: {fileID: 3927305286075355912}
   - component: {fileID: 1685923858290221672}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: HPOP
   m_TagString: Hero
   m_Icon: {fileID: 0}
@@ -61,6 +61,8 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -121,15 +123,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero:
     theName: HPOP
-    Type1: 2
-    Type1Level: 2
-    Type2: 5
-    Type2Level: 3
+    Type1: 3
+    Type1Level: 3
+    Type2: 0
+    Type2Level: 1
     Level:
       currentLV: 1
       currentXP: 0
       MaxXP: 0
       MaxLV: 0
+      XPToNextLevel: 0
     baseHP: 150
     currentHP: 150
     baseEnergy: 50

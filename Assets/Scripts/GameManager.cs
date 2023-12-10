@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using static BaseClass;
 
 public class GameManager : MonoBehaviour
@@ -12,8 +13,12 @@ public class GameManager : MonoBehaviour
 
     public RegionData currentRegion;
 
-    public GameObject heroCharacter;
+    public Inventory inventory;
 
+    public ItemObject item1;
+    public ItemObject item2;
+
+    public GameObject heroCharacter;
 
     public string sceneToLoad;
     public string lastScene;
@@ -47,8 +52,20 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(lastScene);
     }
 
+    private void OnApplicationQuit()
+    {
+        if (inventory.ItemContainer != null)
+           inventory.ItemContainer.Clear();
+    }
+
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.U))
+            inventory.AddItems(item1, 1);
+        if (Input.GetKeyDown(KeyCode.I))
+            inventory.AddItems(item2, 2);
+
+
         switch (state)
         {
             case Gamestates.OverWorld:
@@ -59,8 +76,8 @@ public class GameManager : MonoBehaviour
                 if (attacked)
                 {
                     state = Gamestates.CombatState;
-                    Cursor.visible = true;
-                    Cursor.lockState = CursorLockMode.None;
+                    UnityEngine.Cursor.visible = true;
+                    UnityEngine.Cursor.lockState = CursorLockMode.None;
                 }
                 break;
 
@@ -79,6 +96,15 @@ public class GameManager : MonoBehaviour
         }
         if (StatStorage.Count == 0)
             FirstStatStor();
+    }
+    private bool PartyCheck()
+    {
+        foreach (HeroStatStorage hero in StatStorage)
+        {
+            if (hero.inParty)
+                return true;
+        }
+        return false;
     }
 
     void Awake()
@@ -150,6 +176,7 @@ public class GameManager : MonoBehaviour
             curHeroStats.theName = name;
             curHeroStats.XP = XP;
             curHeroStats.level = LV;
+            curHeroStats.XPToNextLevel = XPNextLV;
 
             curHeroStats.Type1 = Element1;
             curHeroStats.Type2 = Element2;
@@ -184,7 +211,7 @@ public class GameManager : MonoBehaviour
 
     void Encounter()
     {
-        if (isWalking && encounterPosible)
+        if (isWalking && encounterPosible && PartyCheck())
             if (Random.Range(0, 5000) < 5)
             {
                 Debug.Log("ATTACKED");

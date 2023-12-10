@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7294559320278888380}
   - component: {fileID: 932930346928860219}
   - component: {fileID: 1638634312874968413}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Halcalundra
   m_TagString: Hero
   m_Icon: {fileID: 0}
@@ -61,6 +61,8 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -130,6 +132,7 @@ MonoBehaviour:
       currentXP: 0
       MaxXP: 0
       MaxLV: 0
+      XPToNextLevel: 0
     baseHP: 150
     currentHP: 150
     baseEnergy: 50

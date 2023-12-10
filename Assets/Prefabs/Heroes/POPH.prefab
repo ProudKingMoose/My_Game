@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8842530879048021923}
   - component: {fileID: 755536543474043094}
   - component: {fileID: 8445555674932800585}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: POPH
   m_TagString: Hero
   m_Icon: {fileID: 0}
@@ -61,6 +61,8 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -121,15 +123,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hero:
     theName: POPH
-    Type1: 2
+    Type1: 1
     Type1Level: 2
-    Type2: 5
-    Type2Level: 3
+    Type2: 2
+    Type2Level: 2
     Level:
       currentLV: 1
       currentXP: 0
       MaxXP: 0
       MaxLV: 0
+      XPToNextLevel: 0
     baseHP: 150
     currentHP: 150
     baseEnergy: 50

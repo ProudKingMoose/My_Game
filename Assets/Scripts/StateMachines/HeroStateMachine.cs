@@ -10,8 +10,6 @@ public class HeroStatemachine : MonoBehaviour
     private CombatStateMachine CSM;
     public BaseHero hero;
 
-
-
     public enum States
     {
         PROCESSING,
@@ -19,6 +17,7 @@ public class HeroStatemachine : MonoBehaviour
         WAITING,
         ATTACKING,
         FUSING,
+        BUFFING,
         CHECKTURN,
         DEAD,
     }
@@ -44,7 +43,8 @@ public class HeroStatemachine : MonoBehaviour
     public Transform AttackNameSpacer;
     public GameObject AttackNamePanel;
     private List<GameObject> attackNames = new List<GameObject>();
-    private String attackName;
+    private string attackName;
+    private string itemName;
 
     public GameObject DamageNummerPanel;
     public Transform BattleUI;
@@ -56,6 +56,10 @@ public class HeroStatemachine : MonoBehaviour
     void Start()
     {
         hero.Level = new LevelSystem(OnLevelUp);
+
+        StatCorrector();
+        if (hero.Level.currentLV == 0)
+            hero.Level.currentLV = 1;
 
         coldownLimit = 1;
         currentColdown = 0;
@@ -70,10 +74,6 @@ public class HeroStatemachine : MonoBehaviour
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
         currentstate = States.CHECKTURN;
         startPosition = transform.position;
-    }
-    private void Awake()
-    {
-        StatCorrector();
     }
 
     void StatCorrector()
@@ -144,6 +144,9 @@ public class HeroStatemachine : MonoBehaviour
             case (States.FUSING):
                 StartCoroutine(FusionStance());
                 break;
+            case (States.BUFFING):
+                StartCoroutine(HeroBuffHero());
+                break;
 
             case (States.DEAD):
                 if (!alive)
@@ -204,7 +207,7 @@ public class HeroStatemachine : MonoBehaviour
 
         actionStarted = true;
 
-        ANamePanel();
+        ANamePanel('A');
 
         Vector3 enemyPos = new Vector3(EnemyTargeted.transform.position.x + 1.5f, EnemyTargeted.transform.position.y, EnemyTargeted.transform.position.z);
         while (MoveToEnemy(enemyPos)) { yield return null; }
@@ -261,6 +264,44 @@ public class HeroStatemachine : MonoBehaviour
         actionStarted = false;
     }
 
+    private IEnumerator HeroBuffHero()
+    {
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        actionStarted = true;
+
+        itemName = CSM.HandlerList[0].choosenItem.name;
+
+        ANamePanel('B');
+
+        yield return new WaitForSeconds(0.5f);
+
+        ItemUsage();
+
+        yield return new WaitForSeconds(2.5f);
+
+        RemoveAttackText();
+        this.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+
+        CSM.HandlerList.RemoveAt(0);
+
+        if (CSM.HerosReadyToAttack.Count == 0)
+            effectStart = true;
+
+        if (CSM.battleState != CombatStateMachine.Action.WIN && CSM.battleState != CombatStateMachine.Action.LOSE)
+        {
+            CSM.battleState = CombatStateMachine.Action.WAIT;
+
+            currentColdown = 0;
+            currentstate = States.WAITING;
+        }
+
+        actionStarted = false;
+    }
+
     private bool MoveToEnemy(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
@@ -270,7 +311,7 @@ public class HeroStatemachine : MonoBehaviour
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
     }
 
-    void ANamePanel()
+    void ANamePanel(char type)
     {
         GameObject ANamePanel = Instantiate(AttackNamePanel) as GameObject;
         Text AttackNamePanelText = ANamePanel.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
@@ -279,7 +320,10 @@ public class HeroStatemachine : MonoBehaviour
             FindEnergyCurrentLV();
             AttackNamePanelText.text = hero.currentFusionType + " " + hero.usedFusionLevel + " " + attackName;
         }
-        else AttackNamePanelText.text = attackName;
+        else if (type == 'A')
+            AttackNamePanelText.text = attackName;
+        else if (type == 'B')
+            AttackNamePanelText.text = itemName;
         ANamePanel.transform.SetParent(AttackNameSpacer, false);
         attackNames.Add(ANamePanel);
     }
@@ -375,6 +419,29 @@ public class HeroStatemachine : MonoBehaviour
         FindEnergyCurrentLV();
         EnemyTargeted.GetComponent<EnemyStateMachine>().TakeDamage(calculatedDamage, hero.currentFusionType, CSM.HandlerList[0].Abilitytype, CSM.HandlerList[0].AbilityLV, hero.usedFusionLevel);
         hero.currentEnergy -= (CSM.HandlerList[0].choosenAttack.energyCost);
+        HeroPanelUpdate();
+    }
+
+    void ItemUsage()
+    {
+        GameManager.instance.inventory.RemoveItems(CSM.HandlerList[0].choosenItem, 1);
+
+        CSM.HandlerList[0].BuffTarget.GetComponent<HeroStatemachine>().ItemEffects(CSM.HandlerList[0].choosenItem);
+    }
+
+    void ItemEffects(RestoreObject item)
+    {
+        if (item.energyRestore > 0)
+            hero.currentEnergy += item.energyRestore;
+        if (item.healthRestore > 0)
+            hero.currentHP += item.healthRestore;
+        if (hero.currentHP > hero.baseHP)
+            hero.currentHP = hero.baseHP;
+        if (hero.currentEnergy > hero.baseEnergy)
+            hero.currentEnergy = hero.baseEnergy;
+
+        this.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+
         HeroPanelUpdate();
     }
 

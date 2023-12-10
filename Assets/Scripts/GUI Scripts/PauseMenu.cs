@@ -99,7 +99,7 @@ public class PauseMenu : MonoBehaviour
 
             if (heroes.theName == HeroName)
             {
-                if (heroes.inParty)
+                if (heroes.inParty && InPartySpacer.transform.childCount > 1)
                 {
                     heroButton.transform.SetParent(AvialableHeroesSpacer, false);
                     heroes.inParty = false;

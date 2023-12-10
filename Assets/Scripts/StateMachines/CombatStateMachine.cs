@@ -36,9 +36,12 @@ public class CombatStateMachine : MonoBehaviour
 
     [SerializeField]
     public LayerMask interactableLayer;
+    private int heroLayer = 7;
+    private int enemyLayer = 6;
     private GameObject hoveredObject;
     private GameObject selectedObject;
     private bool selectEnemy;
+    private bool selectHero;
 
     private GameObject FSPanel;
 
@@ -59,13 +62,17 @@ public class CombatStateMachine : MonoBehaviour
     public GameObject ActionPanel;
     public GameObject EnergyPanel;
     public GameObject FusionPanel;
+    public GameObject ItemPanel;
 
     public Transform ActionSpacer;
     public Transform EnergySpacer;
     public Transform FusionSpacer;
+    public Transform ItemSpacer;
+
     public GameObject ActionButton;
     public GameObject Ebutton;
     public GameObject FuseButton;
+    public GameObject ItemButton;
     private List<GameObject> aButtons = new List<GameObject>();
 
     //spawnPoints
@@ -97,6 +104,7 @@ public class CombatStateMachine : MonoBehaviour
         turn = Turn.HEROTURN;
 
         selectEnemy = false;
+        selectHero = false;
         battleState = Action.WAIT;
         //Enemies.AddRange(GameObject.FindGameObjectsWithTag ("Enemy"));
         //Heroes.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
@@ -105,6 +113,7 @@ public class CombatStateMachine : MonoBehaviour
         ActionPanel.SetActive (false);
         EnergyPanel.SetActive (false);
         FusionPanel.SetActive (false);
+        ItemPanel.SetActive (false);
     }
 
     // Update is called once per frame
@@ -142,8 +151,15 @@ public class CombatStateMachine : MonoBehaviour
                 if (HandlerList[0].Type == "Hero")
                 {
                     HeroStatemachine HSM = attacker.GetComponent<HeroStatemachine>();
-                    HSM.EnemyTargeted = HandlerList[0].AttackTarget;
-                    HSM.currentstate = HeroStatemachine.States.ATTACKING;
+                    if (HandlerList[0].AttackTarget != null)
+                    {
+                        HSM.EnemyTargeted = HandlerList[0].AttackTarget;
+                        HSM.currentstate = HeroStatemachine.States.ATTACKING;
+                    }
+                    else if (HandlerList[0].BuffTarget != null)
+                    {
+                        HSM.currentstate = HeroStatemachine.States.BUFFING;
+                    }
                 }
                 battleState = Action.PERFORMACTION;
                 break;
@@ -152,20 +168,24 @@ public class CombatStateMachine : MonoBehaviour
 
             break;
             case (Action.ALIVECONTROL):
-                if (Heroes.Count < 1)
+                if (turn == Turn.HEROTURN)
                 {
-                    battleState = Action.LOSE;
+                    if (Heroes.Count < 1)
+                    {
+                        battleState = Action.LOSE;
+                    }
+                    else if (Enemies.Count < 1)
+                    {
+                        battleState = Action.WIN;
+                    }
+                    else
+                    {
+                        ClearAttackPanel();
+                        HeroInput = HeroGUI.ACTIVATE;
+                    }
                 }
-                else if (Enemies.Count < 1)
-                {
-                    battleState = Action.WIN;
-                }
-                else 
-                {
-                    ClearAttackPanel();
-                    HeroInput = HeroGUI.ACTIVATE;
-                }
-                
+                else
+                    battleState = Action.INPUTACTION;
                 break;
 
             case (Action.LOSE):
@@ -195,7 +215,7 @@ public class CombatStateMachine : MonoBehaviour
                     ChoisefromHero = new TurnHandler();
 
                     ActionPanel.SetActive(true);
-                    CreateAttackButtons();
+                    CreateCombatButtons();
                     HeroInput = HeroGUI.WAITING;
                 }
             break;
@@ -204,7 +224,9 @@ public class CombatStateMachine : MonoBehaviour
                     FSPanel.GetComponent<Button>().interactable = false;
 
                 if (selectEnemy)
-                    HandleMouseClick();
+                    HandleMouseClick("Enemy");
+                else if (selectHero)
+                    HandleMouseClick("Hero");
             break;
             case (HeroGUI.DONE):
                 HeroInputDone();
@@ -270,6 +292,13 @@ public class CombatStateMachine : MonoBehaviour
         Debug.Log (ChoisefromHero.AttackTarget);
         HeroInput = HeroGUI.DONE;
     }
+    public void Input2Buff(GameObject selectedHero)
+    {
+        ChoisefromHero.BuffTarget = selectedHero;
+        HeroStatemachine HSM = HerosReadyToAttack[0].GetComponent<HeroStatemachine>();
+        HeroInput = HeroGUI.DONE;
+        Debug.Log(HeroInput);
+    }
 
     public void Input3(BaseAttack choosenAbility, EnergyType1 AbilityType, EnergyLevel AbilityLV)
     {
@@ -297,7 +326,7 @@ public class CombatStateMachine : MonoBehaviour
         FusionPanel.SetActive(true);
     }
 
-    public void Input6(int ChosenEnhancement)//Complete this
+    public void Input6(int ChosenEnhancement)//Takes Input from the buttons that represent what type of fussions that hero can use and switches its statemachine to Fusion
     {
         ChoisefromHero.fusion = ChosenEnhancement;
 
@@ -306,6 +335,24 @@ public class CombatStateMachine : MonoBehaviour
         HSM.hero.currentFusionType = (BaseClass.EnergyType1)ChosenEnhancement;
 
         HSM.currentstate = HeroStatemachine.States.FUSING;
+    }
+
+    public void Input7(RestoreObject item)
+    {
+        ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
+        ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
+        ChoisefromHero.Type = "Hero";
+
+        ChoisefromHero.choosenItem = item;
+
+        selectHero = true;
+        ItemPanel.SetActive(false);
+    }
+
+    public void Input8()
+    {
+        ActionPanel.SetActive(false);
+        ItemPanel.SetActive(true);
     }
 
     void HeroInputDone()
@@ -322,52 +369,101 @@ public class CombatStateMachine : MonoBehaviour
     {
         ActionPanel.SetActive(false);
         EnergyPanel.SetActive(false);
+        FusionPanel.SetActive(false);
+        ItemPanel.SetActive(false);
         foreach (GameObject aButton in aButtons)
         {
             Destroy(aButton);
         }
     }
 
-    private void HandleMouseClick()
+    private void HandleMouseClick(string selectType)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+        if (selectType == "Enemy")
         {
-            GameObject curHoveredObject = hit.collider.gameObject;
-
-            if (curHoveredObject.tag != "DeadEnemy")
+            interactableLayer |= (1 << enemyLayer);
+            interactableLayer &= ~(1 << heroLayer);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
             {
-                curHoveredObject.transform.Find("Selector").gameObject.SetActive(true);
+                GameObject curHoveredObject = hit.collider.gameObject;
 
-                if (curHoveredObject != hoveredObject)
+                if (curHoveredObject.tag != "DeadEnemy")
                 {
-                    curHoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+                    curHoveredObject.transform.Find("Selector").gameObject.SetActive(true);
+
+                    if (curHoveredObject != hoveredObject)
+                    {
+                        curHoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+                    }
+                    hoveredObject = curHoveredObject;
                 }
-                hoveredObject = curHoveredObject;
+            }
+            else if (hoveredObject != null)
+                hoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (hoveredObject.tag != "DeadEnemy")
+                {
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+                    {
+                        selectEnemy = false;
+                        selectedObject = hit.collider.gameObject;
+                        selectedObject.transform.Find("Selector").gameObject.SetActive(false);
+                        Input2(selectedObject);
+                    }
+                }
             }
         }
-        else if (hoveredObject != null)
-            hoveredObject.transform.Find("Selector").gameObject.SetActive(false);
 
-
-        if (Input.GetMouseButtonDown(0))
+        if (selectType == "Hero")
         {
-            if (hoveredObject.tag != "DeadEnemy")
+            interactableLayer &= ~(1 << enemyLayer);
+            interactableLayer |= (1 << heroLayer);
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
             {
-                if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+                GameObject curHoveredObject = hit.collider.gameObject;
+
+                if (curHoveredObject.tag != "DeadHero")
                 {
-                    selectEnemy = false;
-                    selectedObject = hit.collider.gameObject;
-                    selectedObject.transform.Find("Selector").gameObject.SetActive(false);
-                    Input2(selectedObject);
+                    if (curHoveredObject.transform.Find("Selector").gameObject.activeSelf == false)
+                        curHoveredObject.transform.Find("Selector").gameObject.SetActive(true);
+                    else
+                        curHoveredObject.transform.Find("Selector").gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+
+                    if (curHoveredObject != hoveredObject)
+                    {
+                        curHoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+                    }
+                    hoveredObject = curHoveredObject;
+                }
+            }
+            else if (hoveredObject != null)
+                hoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (hoveredObject.tag != "DeadHero")
+                {
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+                    {
+                        selectHero = false;
+                        selectedObject = hit.collider.gameObject;
+                        selectedObject.transform.Find("Selector").gameObject.SetActive(false);
+                        Input2Buff(selectedObject);
+                    }
                 }
             }
         }
     }
 
-    void CreateAttackButtons()
+    void CreateCombatButtons()
     {
         GameObject AttackButton = Instantiate(ActionButton) as GameObject;
         Text AttackButtonText = AttackButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
@@ -383,11 +479,12 @@ public class CombatStateMachine : MonoBehaviour
         EnergyAttackButton.transform.SetParent(ActionSpacer, false);
         aButtons.Add(EnergyAttackButton);
 
-        GameObject ItemButton = Instantiate(ActionButton) as GameObject;
-        Text ItemButtonText = ItemButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+        GameObject itemButtonS = Instantiate(ActionButton) as GameObject;
+        Text ItemButtonText = itemButtonS.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
         ItemButtonText.text = "Items";
-        ItemButton.transform.SetParent(ActionSpacer, false);
-        aButtons.Add(ItemButton);
+        itemButtonS.GetComponent<Button>().onClick.AddListener(() => Input8());
+        itemButtonS.transform.SetParent(ActionSpacer, false);
+        aButtons.Add(itemButtonS);
 
         GameObject FusionFuseButton = Instantiate(ActionButton) as GameObject;
         Text FusionFuseButtonText = FusionFuseButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
@@ -415,6 +512,27 @@ public class CombatStateMachine : MonoBehaviour
         else
         {
             EnergyAttackButton.GetComponent<Button>().interactable = false;
+        }
+
+        if (GameManager.instance.inventory.ItemContainer.Count > 0)
+        {
+            foreach (InventorySlot item in GameManager.instance.inventory.ItemContainer)
+            {
+                if (item.Item.type == ItemObject.ItemType.RESTOREITEM)
+                {
+                    GameObject itemsButton = Instantiate(ItemButton) as GameObject;
+                    Text itemsButtonText = itemsButton.transform.Find("Text (Legacy)").gameObject.GetComponent<Text>();
+                    itemsButtonText.text = item.Item.name + "   : " + item.Amount + "X";
+                    ActionButton ItemToUse = itemsButton.GetComponent<ActionButton>();
+                    ItemToUse.ItemToUse = (RestoreObject)item.Item;
+                    itemsButton.transform.SetParent(ItemSpacer, false);
+                    aButtons.Add(itemsButton);
+                }
+            }
+        }
+        else
+        {
+            itemButtonS.GetComponent<Button>().interactable = false;
         }
 
         if (HerosReadyToAttack[0].GetComponent<HeroStatemachine>().hero.Type1 != BaseClass.EnergyType1.None)
