@@ -168,24 +168,23 @@ public class CombatStateMachine : MonoBehaviour
 
             break;
             case (Action.ALIVECONTROL):
-                if (turn == Turn.HEROTURN)
+                Debug.Log("this is ACTIVATED");
+
+                if (Heroes.Count < 1)
                 {
-                    if (Heroes.Count < 1)
-                    {
-                        battleState = Action.LOSE;
-                    }
-                    else if (Enemies.Count < 1)
-                    {
-                        battleState = Action.WIN;
-                    }
-                    else
-                    {
-                        ClearAttackPanel();
-                        HeroInput = HeroGUI.ACTIVATE;
-                    }
+                    battleState = Action.LOSE;
                 }
-                else
+                else if (Enemies.Count < 1)
+                {
+                    battleState = Action.WIN;
+                }
+                else if (turn != Turn.HEROTURN)
                     battleState = Action.INPUTACTION;
+                else
+                {
+                    ClearAttackPanel();
+                    HeroInput = HeroGUI.ACTIVATE;
+                }
                 break;
 
             case (Action.LOSE):
