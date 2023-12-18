@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     public Inventory inventory;
 
-    public ItemObject item1;
+    public ItemObject item1;//These are test objects and will not be here in final build!
     public ItemObject item2;
 
     public GameObject heroCharacter;
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
 
     public bool isWalking = false;
     public bool encounterPosible = false;
-    public bool attacked;
+    protected bool attacked;
 
     public int amountOfEnemies;
     public List<GameObject> enemiesToBattle = new List<GameObject>();
@@ -120,13 +120,6 @@ public class GameManager : MonoBehaviour
             Player.name = "Player";
         }
     }
-
-    // Update is called once per frame
-    private void FixedUpdate()
-    {
-
-    }
-
     public void FirstStatStor()
     {
         foreach (GameObject Hero in HeroesUnlocked)

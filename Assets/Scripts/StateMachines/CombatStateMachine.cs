@@ -76,8 +76,8 @@ public class CombatStateMachine : MonoBehaviour
     private List<GameObject> aButtons = new List<GameObject>();
 
     //spawnPoints
-    public List<Transform> spawnPoints = new List<Transform>();
-    public List<Transform> HeroPositions = new List<Transform>();
+    private List<Transform> spawnPoints = new List<Transform>();
+    private List<Transform> HeroPositions = new List<Transform>();
 
     private void Awake()
     {
