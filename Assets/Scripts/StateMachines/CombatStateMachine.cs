@@ -178,13 +178,24 @@ public class CombatStateMachine : MonoBehaviour
                     {
                         battleState = Action.WIN;
                     }
-                    else if (Enemies.Count > 1)
-                        battleState = Action.INPUTACTION;
                     else
                     {
                         ClearAttackPanel();
                         HeroInput = HeroGUI.ACTIVATE;
                     }
+                }
+                else if (turn != Turn.HEROTURN)
+                {
+                    if (Heroes.Count < 1)
+                    {
+                        battleState = Action.LOSE;
+                    }
+                    else if (Enemies.Count < 1)
+                    {
+                        battleState = Action.WIN;
+                    }
+                    else
+                        battleState = Action.INPUTACTION;
                 }
                 break;
 
