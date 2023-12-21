@@ -773,7 +773,7 @@ MonoBehaviour:
   Ebutton: {fileID: 5551230643156711959, guid: c7b008ef158621043ad0540f4645256f, type: 3}
   FuseButton: {fileID: 7207894475381394841, guid: d0c691c5b4d754340b58ee7efac3e9cc,
     type: 3}
-  ItemButton: {fileID: 6424164838559118096, guid: fb384712c1627eb448af500f36ecd5ef,
+  ItemButton: {fileID: 8174407921835471685, guid: b787612ec3c6c3c429b19be9c2f3933b,
     type: 3}
   spawnPoints:
   - {fileID: 988017281}

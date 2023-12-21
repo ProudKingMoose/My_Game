@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
 
     public Vector3 lastHeroPosition, nextHeroPosition;
 
+
     public List<HeroStatStorage> StatStorage = new List<HeroStatStorage>();
     public List<GameObject> HeroesUnlocked = new List<GameObject>();
 
@@ -220,7 +221,7 @@ public class GameManager : MonoBehaviour
 
     void BattleStart()
     {
-        amountOfEnemies = Random.Range(1, 3);
+        amountOfEnemies = Random.Range(1, currentRegion.maxAmountOfEnemies);
 
         for (int i = 0; i < amountOfEnemies; i++)
         {

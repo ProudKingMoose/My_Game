@@ -7,21 +7,24 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM PANEL DOES NOT SHOW HEROES CORRECTLY AND DOES NOT WORK ATT ALL.
+public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM PANEL DOES NOT SHOW HEROES CORRECTLY AND DOES NOT WORK ATT AL.
 {
     public static bool IsPaused = false;
 
     public GameObject pauseMenuUI;
     public GameObject partyMenuUI;
     public GameObject statMenuUI;
+    public GameObject itemMenuUI;
 
     public GameObject HeroStatusPanel;
     public GameObject HeroTeamButton;
     public GameObject HeroNamePanelStat;
+    public GameObject ItemBox;
 
     public Transform InPartySpacer;
     public Transform HeroStatsSpacer;
-    
+    public Transform ItemBoxSpacer;
+
     public Transform AvialableHeroesSpacer;
     public Transform UnlockedHeroesStatSpacer;
 
@@ -91,6 +94,18 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
         if (UnlockedHeroesStatSpacer.transform.childCount == 0)
             CreateTeamButtons();
     }
+
+    public void ItemUI()
+    {
+        pauseMenuUI.SetActive(false);
+        itemMenuUI.SetActive(true);
+        RemoveTeamPanels();
+        if (ItemBoxSpacer.transform.childCount == 0)
+            CreateItemBoxes();
+        else
+            UpdateItemBoxes();
+    }
+
 
     public void AddRemoveHero(GameObject heroButton, string HeroName)
     {
@@ -245,10 +260,46 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
             pauseMenuUI.SetActive(true);
             TeamPanelUpdate();
         }
+        else if (itemMenuUI.activeSelf)
+        {
+            itemMenuUI.SetActive(false);
+            pauseMenuUI.SetActive(true);
+            TeamPanelUpdate();
+        }
         else if (pauseMenuUI.activeSelf)
             Resume();
 
     }
+
+
+    void CreateItemBoxes()
+    {
+        foreach (InventorySlot itemSlot in GameManager.instance.inventory.ItemContainer)
+        {
+            if (itemMenuUI.activeSelf)
+            {
+                GameObject itemBox = Instantiate(ItemBox) as GameObject;
+                TextMeshProUGUI ItemBoxItemName = itemBox.transform.Find("ItemName").gameObject.GetComponent<TextMeshProUGUI>();
+                TextMeshProUGUI ItemBoxItemAmount = itemBox.transform.Find("Amount").gameObject.GetComponent<TextMeshProUGUI>();
+
+                ItemBoxItemName.text = itemSlot.Item.name;
+                ItemBoxItemAmount.text = itemSlot.Amount.ToString() + "X";
+
+                itemBox.transform.SetParent(ItemBoxSpacer);
+                ItemBoxes.Add(itemBox);
+            }
+        }
+    }
+
+    void UpdateItemBoxes()
+    {
+        foreach (GameObject boxes in ItemBoxes)
+        {
+            Destroy(boxes);
+        }
+        CreateItemBoxes();
+    }
+
     void Resume()
     {
         pauseMenuUI.SetActive(false);
@@ -290,4 +341,5 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
             }
         }
     }
+
 }

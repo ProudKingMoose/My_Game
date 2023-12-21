@@ -156,10 +156,15 @@ public class HeroStatemachine : MonoBehaviour
                 else
                 {
                     this.gameObject.tag = "DeadHero";
+
                     CSM.HerosReadyToAttack.Remove(this.gameObject);
+
                     CSM.Heroes.Remove(this.gameObject);
+
                     CSM.DeadHeroes.Add(this.gameObject);
+
                     Selector.SetActive(false);
+
                     CSM.ActionPanel.SetActive(false);
 
                     for (int i = 0; i < CSM.HandlerList.Count; i++)

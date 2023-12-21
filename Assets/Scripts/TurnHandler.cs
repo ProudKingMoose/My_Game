@@ -10,7 +10,7 @@ public class TurnHandler
     public string Attacker;
     public string Type;
     public GameObject AttackersGameObject;
-    //public Animator AttackersAnimator;
+    public Animator AttackersAnimator;
 
     public GameObject AttackTarget;
     public BaseAttack choosenAttack;
