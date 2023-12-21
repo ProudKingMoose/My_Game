@@ -156,15 +156,10 @@ public class HeroStatemachine : MonoBehaviour
                 else
                 {
                     this.gameObject.tag = "DeadHero";
-
                     CSM.HerosReadyToAttack.Remove(this.gameObject);
-
                     CSM.Heroes.Remove(this.gameObject);
-
                     CSM.DeadHeroes.Add(this.gameObject);
-
                     Selector.SetActive(false);
-
                     CSM.ActionPanel.SetActive(false);
 
                     for (int i = 0; i < CSM.HandlerList.Count; i++)
@@ -284,7 +279,7 @@ public class HeroStatemachine : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         RemoveAttackText();
-        Debug.Log("This code is runed or else im angry");
+        Debug.Log("This code is runned or else im angry");
         CSM.HandlerList[0].BuffTarget.GetComponent<HeroStatemachine>().GetComponent<MeshRenderer>().material.color = Color.blue;
 
         CSM.HandlerList.RemoveAt(0);

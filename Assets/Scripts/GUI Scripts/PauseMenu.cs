@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM PANEL DOES NOT SHOW HEROES CORRECTLY AND DOES NOT WORK ATT AL.
+public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM PANEL DOES NOT SHOW HEROES CORRECTLY AND DOES NOT WORK ATT ALL.
 {
     public static bool IsPaused = false;
 

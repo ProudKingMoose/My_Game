@@ -25,14 +25,13 @@ public class GameManager : MonoBehaviour
 
     public bool isWalking = false;
     public bool encounterPosible = false;
-    protected bool attacked;
+    private bool attacked;
 
     public int amountOfEnemies;
     public List<GameObject> enemiesToBattle = new List<GameObject>();
     public List<GameObject> heroesToBattle = new List<GameObject>();
 
     public Vector3 lastHeroPosition, nextHeroPosition;
-
 
     public List<HeroStatStorage> StatStorage = new List<HeroStatStorage>();
     public List<GameObject> HeroesUnlocked = new List<GameObject>();

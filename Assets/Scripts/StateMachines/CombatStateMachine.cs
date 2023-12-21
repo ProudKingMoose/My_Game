@@ -100,14 +100,11 @@ public class CombatStateMachine : MonoBehaviour
     }
     void Start()
     {
-
         turn = Turn.HEROTURN;
 
         selectEnemy = false;
         selectHero = false;
         battleState = Action.WAIT;
-        //Enemies.AddRange(GameObject.FindGameObjectsWithTag ("Enemy"));
-        //Heroes.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
 
         HeroInput = HeroGUI.ACTIVATE;
         ActionPanel.SetActive (false);
@@ -188,10 +185,9 @@ public class CombatStateMachine : MonoBehaviour
                 break;
 
             case (Action.LOSE):
-                Debug.Log("YOU LOSE");
+
             break;
             case (Action.WIN):
-                Debug.Log("YOU WIN");
                 for (int i = 0; i < Heroes.Count; i++)
                 {
                     Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
@@ -209,7 +205,6 @@ public class CombatStateMachine : MonoBehaviour
             case (HeroGUI.ACTIVATE):
                 if (HerosReadyToAttack.Count > 0)
                 {
-
                     HerosReadyToAttack[0].transform.Find("Selector").gameObject.SetActive(true);
                     ChoisefromHero = new TurnHandler();
 
