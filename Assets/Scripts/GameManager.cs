@@ -213,7 +213,7 @@ public class GameManager : MonoBehaviour
 
     void BattleStart()
     {
-        amountOfEnemies = Random.Range(1, currentRegion.maxAmountOfEnemies);
+        amountOfEnemies = Random.Range(1, 3);
 
         for (int i = 0; i < amountOfEnemies; i++)
         {

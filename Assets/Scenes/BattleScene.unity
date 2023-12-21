@@ -782,9 +782,9 @@ MonoBehaviour:
   - {fileID: 856954844}
   - {fileID: 1655280558}
   HeroPositions:
-  - {fileID: 784861739}
-  - {fileID: 1069595100}
   - {fileID: 474178523}
+  - {fileID: 1069595100}
+  - {fileID: 784861739}
 --- !u!4 &772765651
 Transform:
   m_ObjectHideFlags: 0

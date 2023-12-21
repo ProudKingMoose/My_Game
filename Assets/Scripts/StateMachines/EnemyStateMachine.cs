@@ -114,8 +114,6 @@ public class EnemyStateMachine : MonoBehaviour
                 }
                 else
                 {
-
-                    Debug.Log("this is ACTIVATED");
                     this.gameObject.tag = "DeadEnemy";
 
                     CSM.Enemies.Remove(this.gameObject);

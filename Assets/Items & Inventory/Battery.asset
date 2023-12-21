@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 0}
   type: 0
-  description: A battery that resotes a team memebers Energy by 30E
+  description: A battery that resotes a team memebrs Energy by 30E
   healthRestore: 0
   energyRestore: 30

@@ -276,9 +276,10 @@ public class HeroStatemachine : MonoBehaviour
 
         ItemUsage();
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(2.5f);
 
         RemoveAttackText();
+        this.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
         Debug.Log("This code is runned or else im angry");
         CSM.HandlerList[0].BuffTarget.GetComponent<HeroStatemachine>().GetComponent<MeshRenderer>().material.color = Color.blue;
 

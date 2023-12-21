@@ -14,16 +14,13 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
     public GameObject pauseMenuUI;
     public GameObject partyMenuUI;
     public GameObject statMenuUI;
-    public GameObject itemMenuUI;
 
     public GameObject HeroStatusPanel;
     public GameObject HeroTeamButton;
     public GameObject HeroNamePanelStat;
-    public GameObject ItemBox;
 
     public Transform InPartySpacer;
     public Transform HeroStatsSpacer;
-    public Transform ItemBoxSpacer;
     
     public Transform AvialableHeroesSpacer;
     public Transform UnlockedHeroesStatSpacer;
@@ -56,24 +53,16 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
             TeamPanelUpdate();
     }
 
-    private void Awake()
-    {
-        TeamPanelUpdate();
-    }
-
     void TeamPanelUpdate()
     {
-        if (HeroStatusPanelsDisplayed.Count == 0)
+        foreach (HeroStatStorage heroes in GameManager.instance.StatStorage)
         {
-            foreach (HeroStatStorage heroes in GameManager.instance.StatStorage)
+            if (heroes.inParty)
             {
-                if (heroes.inParty)
-                {
-                    InTeamPanels(heroes);
-                }
+                InTeamPanels(heroes);
             }
         }
-        else if (HeroStatusPanelsDisplayed.Count > 0)
+        if (HeroStatusPanelsDisplayed.Count > 0)
         {
             foreach (GameObject panel in HeroStatusPanelsDisplayed)
             {
@@ -99,17 +88,6 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
         RemoveTeamPanels();
         if (UnlockedHeroesStatSpacer.transform.childCount == 0)
             CreateTeamButtons();
-    }
-
-    public void ItemUI()
-    {
-        pauseMenuUI.SetActive(false);
-        itemMenuUI.SetActive(true);
-        RemoveTeamPanels();
-        if (ItemBoxSpacer.transform.childCount == 0)
-            CreateItemBoxes();
-        else
-            UpdateItemBoxes();
     }
 
     public void AddRemoveHero(GameObject heroButton, string HeroName)
@@ -251,7 +229,7 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
         }
     }
 
-    void ExitUI()//Change this so it uses a ENUM instead of this wierd setup
+    void ExitUI()
     {
         if (partyMenuUI.activeSelf)
         {
@@ -262,12 +240,6 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
         else if (statMenuUI.activeSelf)
         {
             statMenuUI.SetActive(false);
-            pauseMenuUI.SetActive(true);
-            TeamPanelUpdate();
-        }
-        else if (itemMenuUI.activeSelf)
-        {
-            itemMenuUI.SetActive(false);
             pauseMenuUI.SetActive(true);
             TeamPanelUpdate();
         }
@@ -315,33 +287,5 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
                 HeroButton.transform.SetParent(UnlockedHeroesStatSpacer, false);
             }
         }
-    }
-
-    void CreateItemBoxes()
-    {
-        foreach (InventorySlot itemSlot in GameManager.instance.inventory.ItemContainer)
-        {
-            if (itemMenuUI.activeSelf)
-            {
-                GameObject itemBox = Instantiate(ItemBox) as GameObject;
-                TextMeshProUGUI ItemBoxItemName = itemBox.transform.Find("ItemName").gameObject.GetComponent<TextMeshProUGUI>();
-                TextMeshProUGUI ItemBoxItemAmoúnt = itemBox.transform.Find("Amount").gameObject.GetComponent<TextMeshProUGUI>();
-
-                ItemBoxItemName.text = itemSlot.Item.name;
-                ItemBoxItemAmoúnt.text = itemSlot.Amount.ToString() + "X";
-
-                itemBox.transform.SetParent(ItemBoxSpacer);
-                ItemBoxes.Add(itemBox);
-            }
-        }
-    }
-
-    void UpdateItemBoxes()
-    {
-        foreach (GameObject boxes in ItemBoxes)
-        {
-            Destroy(boxes);
-        }
-        CreateItemBoxes();
     }
 }

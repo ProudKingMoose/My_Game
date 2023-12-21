@@ -76,8 +76,8 @@ public class CombatStateMachine : MonoBehaviour
     private List<GameObject> aButtons = new List<GameObject>();
 
     //spawnPoints
-    private List<Transform> spawnPoints = new List<Transform>();
-    private List<Transform> HeroPositions = new List<Transform>();
+    public List<Transform> spawnPoints = new List<Transform>();
+    public List<Transform> HeroPositions = new List<Transform>();
 
     private void Awake()
     {
@@ -165,22 +165,23 @@ public class CombatStateMachine : MonoBehaviour
 
             break;
             case (Action.ALIVECONTROL):
-                Debug.Log("this is ACTIVATED");
-
-                if (Heroes.Count < 1)
+                if (turn == Turn.HEROTURN)
                 {
-                    battleState = Action.LOSE;
-                }
-                else if (Enemies.Count < 1)
-                {
-                    battleState = Action.WIN;
-                }
-                else if (turn != Turn.HEROTURN)
-                    battleState = Action.INPUTACTION;
-                else
-                {
-                    ClearAttackPanel();
-                    HeroInput = HeroGUI.ACTIVATE;
+                    if (Heroes.Count < 1)
+                    {
+                        battleState = Action.LOSE;
+                    }
+                    else if (Enemies.Count < 1)
+                    {
+                        battleState = Action.WIN;
+                    }
+                    else if (Enemies.Count > 1)
+                        battleState = Action.INPUTACTION;
+                    else
+                    {
+                        ClearAttackPanel();
+                        HeroInput = HeroGUI.ACTIVATE;
+                    }
                 }
                 break;
 
