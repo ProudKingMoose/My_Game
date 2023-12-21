@@ -31,6 +31,8 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
     private List<GameObject> HeroStatusPanelsDisplayed = new List<GameObject>();
     private List<GameObject> HeroInTeamPanels = new List<GameObject>();
     private List<GameObject> ItemBoxes = new List<GameObject>();
+
+    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E))
