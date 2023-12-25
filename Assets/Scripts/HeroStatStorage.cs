@@ -28,5 +28,7 @@ public class HeroStatStorage
 
     public List<BaseAttack> EnergyAttacks = new List<BaseAttack>();
 
+    public List<EquipementObject> HeroGear = new List<EquipementObject>();
+
     public bool inParty = false;
 }

@@ -6,34 +6,69 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static EquipementObject;
 
 public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM PANEL DOES NOT SHOW HEROES CORRECTLY AND DOES NOT WORK ATT AL.
 {
     public static bool IsPaused = false;
 
+    //PAUSEMENU OBJECTS
+    [Header("PauseMenu")]
     public GameObject pauseMenuUI;
-    public GameObject partyMenuUI;
-    public GameObject statMenuUI;
-    public GameObject itemMenuUI;
 
-    public GameObject HeroStatusPanel;
-    public GameObject HeroTeamButton;
-    public GameObject HeroNamePanelStat;
-    public GameObject ItemBox;
-
-    public Transform InPartySpacer;
-    public Transform HeroStatsSpacer;
-    public Transform ItemBoxSpacer;
-
-    public Transform AvialableHeroesSpacer;
-    public Transform UnlockedHeroesStatSpacer;
-
-    public Transform PartyUIHeroDisplayer;
     public Transform PauseUIHeroDisplayer;
 
-    private List<GameObject> HeroStatusPanelsDisplayed = new List<GameObject>();
+    //PARTYMENU OBJECTS
+    [Header("PartyMenu")]
+    public GameObject partyMenuUI;
+    public GameObject HeroTeamButton;
+
+    public Transform InPartySpacer;
+    public Transform PartyUIHeroDisplayer;
+    public Transform AvialableHeroesSpacer;
+
     private List<GameObject> HeroInTeamPanels = new List<GameObject>();
+    private List<GameObject> HeroStatusPanelsDisplayed = new List<GameObject>();
+
+    //ITEMMENU OBJECTS
+    [Header("ItemMenu")]
+    public GameObject itemMenuUI;
+    public GameObject ItemBox;
+
+    public Transform ItemBoxSpacer;
+
     private List<GameObject> ItemBoxes = new List<GameObject>();
+
+    //STATMENU OBJECTS
+    [Header("StatMenu")]
+    public GameObject statMenuUI;
+    public GameObject HeroStatusPanel;
+    public GameObject HeroNamePanelStat;
+
+    public Transform UnlockedHeroesStatSpacer;
+    public Transform HeroStatsSpacer;
+
+    //EQUIPEMENTMENU OBJECTS
+    [Header("EquipementMenu")]
+    public GameObject EquipementUI;
+    public GameObject GearEquipButton;
+    public GameObject HeroGear;
+    public GameObject AviableGear;
+    public GameObject ChangingGearHeroPanel;
+
+    public Transform AviableGearSpacer;
+    public Transform HeroChangingGearSpacer;
+
+    private List<GameObject> GearShown = new List<GameObject>();
+
+    private string heroChangeGearName;
+
+
+    private void Awake()
+    {
+        AviableGear.SetActive(false);
+        HeroGear.SetActive(false);
+    }
 
     // Update is called once per frame
     void Update()
@@ -106,6 +141,106 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
             UpdateItemBoxes();
     }
 
+    public void GearUI()
+    {
+        pauseMenuUI.SetActive(false);
+        EquipementUI.SetActive(true);
+        RemoveTeamPanels();
+        if (HeroChangingGearSpacer.transform.childCount == 0)
+            CreateTeamButtons();
+    }
+
+    public void HeroCurrentGear(string name)
+    {
+        if (heroChangeGearName == null || heroChangeGearName != name)
+        {
+            ClearGearNamePanels();
+            heroChangeGearName = name;
+            foreach (HeroStatStorage hero in GameManager.instance.StatStorage)
+                if (hero.theName == heroChangeGearName)
+                {
+                    int Armnum = 0;
+                    int Gearnum = 0;
+                    foreach (EquipementObject gear in hero.HeroGear)
+                    {
+                        if (gear.gearType == GearType.WEAPON)
+                        {
+                            HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                            HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot").GetComponent<GearEquipButton>().item = gear;
+                        }
+                        else if (gear.gearType == GearType.ARMOUR)
+                        {
+                            switch (Armnum)
+                            {
+                                case 0:
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (1)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (1)").GetComponent<GearEquipButton>().item = gear;
+                                    break;
+
+                                case 1:
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (2)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (2)").GetComponent<GearEquipButton>().item = gear;
+                                    break;
+
+                                case 2:
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (3)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (3)").GetComponent<GearEquipButton>().item = gear;
+                                    break;
+                            }
+                            Armnum++;
+                        }
+                        else if (gear.gearType == GearType.CORE)
+                        {
+                            switch (Gearnum)
+                            {
+                                case 0:
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (4)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (4)").GetComponent<GearEquipButton>().item = gear;
+                                    break;
+
+                                case 1:
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (5)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (5)").GetComponent<GearEquipButton>().item = gear;
+                                    break;
+
+                                case 2:
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (6)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (6)").GetComponent<GearEquipButton>().item = gear;
+                                    break;
+
+                                case 3:
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (7)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = gear.name;
+                                    HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (7)").GetComponent<GearEquipButton>().item = gear;
+                                    break;
+                            }
+                            Gearnum++;
+                        }
+                    }
+                }
+        }
+        HeroGear.SetActive(true);
+    }
+
+    void ClearGearNamePanels()
+    {
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot").GetComponent<GearEquipButton>().item = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (1)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (1)").GetComponent<GearEquipButton>().item = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (2)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (2)").GetComponent<GearEquipButton>().item = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (3)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (3)").GetComponent<GearEquipButton>().item = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (4)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (4)").GetComponent<GearEquipButton>().item = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (5)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (5)").GetComponent<GearEquipButton>().item = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (6)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (6)").GetComponent<GearEquipButton>().item = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (7)").transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = null;
+        HeroGear.transform.Find("HeroGearSpacer").transform.Find("Slot (7)").GetComponent<GearEquipButton>().item = null;
+    }
+
 
     public void AddRemoveHero(GameObject heroButton, string HeroName)
     {
@@ -174,6 +309,13 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
             Destroy(panel);
         }
     }
+    void RemoveGearShown()
+    {
+        foreach (GameObject gear in GearShown)
+        {
+            Destroy(gear);
+        }
+    }
 
     public void HoverDisplayHeroes(string HeroName)
     {
@@ -222,6 +364,7 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
                 TextMeshProUGUI XP = HeroStatsSpacer.Find("XPContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
                 XP.text = Hero.XP.ToString();
                 TextMeshProUGUI NextLV = HeroStatsSpacer.Find("NextLVXPContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
+
                 NextLV.text = Hero.XPToNextLevel.ToString();
 
                 TextMeshProUGUI HP = HeroStatsSpacer.Find("HealthContainer").transform.Find("Value").gameObject.GetComponent<TextMeshProUGUI>();
@@ -266,9 +409,108 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
             pauseMenuUI.SetActive(true);
             TeamPanelUpdate();
         }
+        else if (EquipementUI.activeSelf)
+        {
+            EquipementUI.SetActive(false);
+            AviableGear.SetActive(false);
+            HeroGear.SetActive(false);
+            pauseMenuUI.SetActive(true);
+            TeamPanelUpdate();
+        }
         else if (pauseMenuUI.activeSelf)
             Resume();
 
+    }
+
+    public void GearItemsEquipMenu(GearType gearToEquip, GameObject GearButtonClicked)
+    {
+        AviableGear.SetActive(true);
+        switch (gearToEquip)
+        {
+            case GearType.WEAPON:
+                foreach (InventorySlot itemslot in GameManager.instance.inventory.ItemContainer)
+                {
+                    if (itemslot.Item is EquipementObject)
+                    {
+                        EquipementObject item = itemslot.Item as EquipementObject;
+                        if (item.gearType == GearType.WEAPON)
+                        {
+                            GameObject GearButton = Instantiate(GearEquipButton) as GameObject;
+                            TextMeshProUGUI HeroButtonText = GearButton.transform.Find("TextMeshPro").gameObject.GetComponent<TextMeshProUGUI>();
+
+                            GearEquipButton GEB = GearButton.GetComponent<GearEquipButton>();
+                            GEB.item = item;
+                            GEB.theButton = GearButtonClicked;
+
+                            HeroButtonText.text = itemslot.Item.name;
+                            GearButton.transform.SetParent(AviableGearSpacer, false);
+                            GearShown.Add(GearButton);
+                        }
+                    }
+                }
+                break;
+
+            case GearType.ARMOUR:
+                foreach (InventorySlot itemslot in GameManager.instance.inventory.ItemContainer)
+                {
+                    if (itemslot.Item is EquipementObject)
+                    {
+                        EquipementObject item = itemslot.Item as EquipementObject;
+                        if (item.gearType == GearType.ARMOUR)
+                        {
+                            GameObject GearButton = Instantiate(GearEquipButton) as GameObject;
+                            TextMeshProUGUI HeroButtonText = GearButton.transform.Find("SlotItem").gameObject.GetComponent<TextMeshProUGUI>();
+
+                            GearEquipButton GEB = GearButton.GetComponent<GearEquipButton>();
+                            GEB.item = item;
+                            GEB.theButton = GearButtonClicked;
+
+                            HeroButtonText.text = itemslot.Item.name;
+                            GearButton.transform.SetParent(AviableGearSpacer, false);
+                            GearShown.Add(GearButton);
+                        }
+                    }
+                }
+                break;
+
+            case GearType.CORE:
+                foreach (InventorySlot itemslot in GameManager.instance.inventory.ItemContainer)
+                {
+                    if (itemslot.Item is EquipementObject)
+                    {
+                        EquipementObject item = itemslot.Item as EquipementObject;
+                        if (item.gearType == GearType.CORE)
+                        {
+                            GameObject GearButton = Instantiate(GearEquipButton) as GameObject;
+                            TextMeshProUGUI HeroButtonText = GearButton.transform.Find("TextMeshPro").gameObject.GetComponent<TextMeshProUGUI>();
+
+                            GearEquipButton GEB = GearButton.GetComponent<GearEquipButton>();
+                            GEB.item = item;
+                            GEB.theButton = GearButtonClicked;
+
+                            HeroButtonText.text = itemslot.Item.name;
+                            GearButton.transform.SetParent(AviableGearSpacer, false);
+                            GearShown.Add(GearButton);
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    public void EquipReplaceGear(EquipementObject item, GameObject button)//COMPLETE THIS
+    {
+        foreach (HeroStatStorage hero in GameManager.instance.StatStorage)
+        {
+            if (hero.theName == heroChangeGearName)
+                hero.HeroGear.Add(item);
+        }
+        GameManager.instance.inventory.RemoveItems(item, 1);
+        button.transform.Find("SlotItem").GetComponent<TextMeshProUGUI>().text = item.name;
+
+        RemoveGearShown();
+        AviableGear.SetActive(false);
+        HeroGear.SetActive(false);
     }
 
 
@@ -338,6 +580,19 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
 
                 HeroButtonText.text = Hero.theName;
                 HeroButton.transform.SetParent(UnlockedHeroesStatSpacer, false);
+            }
+            else if (EquipementUI.activeSelf)//Complete this code
+            {
+                GameObject HeroButton = Instantiate(ChangingGearHeroPanel) as GameObject;
+                TextMeshProUGUI HeroButtonText = HeroButton.transform.Find("TextMeshPro").gameObject.GetComponent<TextMeshProUGUI>();
+
+                HeroTeamButton HTB = HeroButton.GetComponent<HeroTeamButton>();
+                HTB.theButton = HeroButton;
+                HTB.HeroName = Hero.theName;
+
+                HeroButtonText.text = Hero.theName;
+                if (Hero.inParty)
+                    HeroButton.transform.SetParent(HeroChangingGearSpacer, false);
             }
         }
     }

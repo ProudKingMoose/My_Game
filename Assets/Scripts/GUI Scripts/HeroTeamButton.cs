@@ -19,4 +19,8 @@ public class HeroTeamButton : MonoBehaviour
     {
         GameObject.Find("Canvas").GetComponent<PauseMenu>().HoverDisplayHeroStats(HeroName);
     }
+    public void CurrentHerogear()
+    {
+        GameObject.Find("Canvas").GetComponent<PauseMenu>().HeroCurrentGear(HeroName);
+    }
 }

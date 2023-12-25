@@ -7,4 +7,5 @@ public class RestoreObject : ItemObject
 {
     public int healthRestore;
     public int energyRestore;
+
 }

@@ -225,7 +225,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < amountOfEnemies; i++)
         {
-            enemiesToBattle.Add(currentRegion.enemies[Random.Range(0, currentRegion.enemies.Count)]);
+            enemiesToBattle.Add(currentRegion.enemies[Random.Range(1, currentRegion.enemies.Count)]);
         }
 
         lastHeroPosition = GameObject.Find("Player").gameObject.transform.position;
@@ -233,6 +233,21 @@ public class GameManager : MonoBehaviour
         lastScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentRegion.BattleScene);
         HeroReset();
+    }
+
+    private void GearCalc()//complete this code
+    {
+        foreach(HeroStatStorage hero in StatStorage)
+        {
+            foreach (EquipementObject gear in hero.HeroGear)
+            {
+                hero.baseHP += gear.HPPoolDiff;
+                hero.baseEnergy += gear.EPoolDiff;
+                hero.baseAttackPower += gear.APDiff;
+                hero.baseDefence += gear.DPDiff;
+                hero.baseEAttackPower += gear.EPDiff;
+            }
+        }
     }
 
     void HeroReset()
