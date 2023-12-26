@@ -16,6 +16,9 @@ public class EquipementObject : ItemObject
         WEAPON,
         ARMOUR,
         CORE,
+        NONE,
     }
     public GearType gearType;
+
+    public BaseAttack CoreElement;
 }

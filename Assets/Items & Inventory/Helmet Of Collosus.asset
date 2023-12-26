@@ -15,6 +15,10 @@ MonoBehaviour:
   prefab: {fileID: 0}
   type: 1
   description: 
-  AP: 0
-  DP: 0
+  APDiff: 0
+  DPDiff: 3
+  EPDiff: 0
+  HPPoolDiff: 10
+  EPoolDiff: 0
   gearType: 1
+  CoreElement: {fileID: 0}

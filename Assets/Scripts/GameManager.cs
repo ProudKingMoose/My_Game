@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
     public Inventory inventory;
 
-    public ItemObject item1;
+    public List<ItemObject> item1;
     public ItemObject item2;
 
     public GameObject heroCharacter;
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.U))
-            inventory.AddItems(item1, 1);
+            inventory.AddItems(item1[Random.Range(0, item1.Count - 1)], 1);
         if (Input.GetKeyDown(KeyCode.I))
             inventory.AddItems(item2, 2);
 

@@ -92,6 +92,10 @@ public class HeroStatemachine : MonoBehaviour
         hero.baseAttackPower = storedData.baseAttackPower;
         hero.baseEDefence = storedData.baseEDefence;
         hero.baseEAttackPower = storedData.baseEAttackPower;
+        hero.currentDefence = hero.baseDefence;
+        hero.currentAttackPower = hero.baseAttackPower;
+        hero.currentEDefence = hero.baseEDefence;
+        hero.currentEAttackPower = hero.baseEAttackPower;
 
         hero.Type1Level = storedData.Type1Level;
         hero.Type2Level = storedData.Type2Level;

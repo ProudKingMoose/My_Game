@@ -10,16 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bef8f97315ab26419c0016ab261afed, type: 3}
-  m_Name: Core Of Shadows
+  m_Name: Armour of Detrenella
   m_EditorClassIdentifier: 
   prefab: {fileID: 0}
   type: 1
   description: 
   APDiff: 0
-  DPDiff: 0
-  EPDiff: 3
-  HPPoolDiff: 0
-  EPoolDiff: 5
-  gearType: 2
-  CoreElement: {fileID: 1482527448381374540, guid: b286c74bda7d3f74cb8c85c463b48bdb,
-    type: 3}
+  DPDiff: 5
+  EPDiff: 0
+  HPPoolDiff: 15
+  EPoolDiff: 0
+  gearType: 1
+  CoreElement: {fileID: 0}

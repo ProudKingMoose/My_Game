@@ -16,4 +16,8 @@ public class GearEquipButton : MonoBehaviour
     {
         GameObject.Find("Canvas").GetComponent<PauseMenu>().EquipReplaceGear(item, theButton);
     }
+    public void UnequipItem()
+    {
+        GameObject.Find("Canvas").GetComponent<PauseMenu>().UnequipItem(theButton);
+    }
 }
