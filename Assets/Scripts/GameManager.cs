@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SearchService;
@@ -129,6 +130,7 @@ public class GameManager : MonoBehaviour
 
     public void FirstStatStor()
     {
+
         foreach (GameObject Hero in HeroesUnlocked)
         {
             BaseHero HSM = Hero.GetComponent<HeroStatemachine>().hero;
@@ -233,21 +235,6 @@ public class GameManager : MonoBehaviour
         lastScene = SceneManager.GetActiveScene().name;
         SceneManager.LoadScene(currentRegion.BattleScene);
         HeroReset();
-    }
-
-    private void GearCalc()//complete this code
-    {
-        foreach(HeroStatStorage hero in StatStorage)
-        {
-            foreach (EquipementObject gear in hero.HeroGear)
-            {
-                hero.baseHP += gear.HPPoolDiff;
-                hero.baseEnergy += gear.EPoolDiff;
-                hero.baseAttackPower += gear.APDiff;
-                hero.baseDefence += gear.DPDiff;
-                hero.baseEAttackPower += gear.EPDiff;
-            }
-        }
     }
 
     void HeroReset()

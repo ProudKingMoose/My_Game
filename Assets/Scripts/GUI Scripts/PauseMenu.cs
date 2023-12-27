@@ -417,6 +417,7 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
             HeroGear.SetActive(false);
             pauseMenuUI.SetActive(true);
             TeamPanelUpdate();
+            RemoveTeamPanels();
         }
         else if (pauseMenuUI.activeSelf)
             Resume();
@@ -556,7 +557,7 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
                     HERO.baseEnergy += item.EPoolDiff;
                     HERO.baseHP += item.HPPoolDiff;
                     if (item.gearType == GearType.CORE)
-                        hero.EnergyAttacks.Add(item.CoreElement);
+                        HERO.EnergyAttacks.Add(item.CoreElement);//There are still problems with this part of the code (THE PREFABS STILL CHANGE!!!!!)
                 }
                 EquipementObject previousItem = button.GetComponent<GearEquipButton>().item;
                 if (previousItem != null)
@@ -567,7 +568,7 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
                     HERO.baseEnergy -= previousItem.EPoolDiff;
                     HERO.baseHP -= previousItem.HPPoolDiff;
                     if (previousItem.gearType == GearType.CORE)
-                        hero.EnergyAttacks.Remove(previousItem.CoreElement);
+                        HERO.EnergyAttacks.Remove(previousItem.CoreElement);
                 }
             }
         }
@@ -654,6 +655,7 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
 
                     HeroButtonText.text = Hero.theName;
                     HeroButton.transform.SetParent(HeroChangingGearSpacer, false);
+                    HeroInTeamPanels.Add(HeroButton);
                 }
             }
         }

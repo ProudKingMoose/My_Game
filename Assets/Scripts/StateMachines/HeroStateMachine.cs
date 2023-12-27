@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static BaseClass;
@@ -101,6 +102,7 @@ public class HeroStatemachine : MonoBehaviour
         hero.Type2Level = storedData.Type2Level;
 
         hero.EnergyAttacks = storedData.EnergyAttacks;
+        Debug.Log("This code is runned one time");
     }
 
     public void OnLevelUp()
@@ -425,6 +427,8 @@ public class HeroStatemachine : MonoBehaviour
         FindEnergyCurrentLV();
         EnemyTargeted.GetComponent<EnemyStateMachine>().TakeDamage(calculatedDamage, hero.currentFusionType, CSM.HandlerList[0].Abilitytype, CSM.HandlerList[0].AbilityLV, hero.usedFusionLevel);
         hero.currentEnergy -= (CSM.HandlerList[0].choosenAttack.energyCost);
+        if (hero.currentEnergy <= 0)
+            hero.currentEnergy = 0;
         HeroPanelUpdate();
     }
 

@@ -156,8 +156,7 @@ MonoBehaviour:
     beenEffected: 0
     aviableAttacks:
     - {fileID: 3090086518861621652, guid: f714020c8396d3447bad0bc5db2ef54f, type: 3}
-    EnergyAttacks:
-    - {fileID: 7390264582323948079, guid: 32f7f2a64322a564b860f1ab96475e43, type: 3}
+    EnergyAttacks: []
   currentstate: 0
   Selector: {fileID: 3809809384680566110}
   EnemyTargeted: {fileID: 0}
