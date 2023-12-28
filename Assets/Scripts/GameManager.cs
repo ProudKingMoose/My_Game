@@ -131,14 +131,16 @@ public class GameManager : MonoBehaviour
     public void FirstStatStor()
     {
 
-        foreach (GameObject Hero in HeroesUnlocked)
+        foreach (GameObject HERO in HeroesUnlocked)
         {
+            GameObject Hero = Instantiate(HERO);
             BaseHero HSM = Hero.GetComponent<HeroStatemachine>().hero;
             GameManager.instance.SavePlayerStats(HSM.theName, HSM.Level.currentXP,
                 HSM.Level.currentLV, HSM.Level.XPToNextLevel,HSM.Type1, HSM.Type2, HSM.Type1Level, HSM.Type2Level,
                 HSM.baseHP, HSM.currentHP, HSM.baseEnergy, HSM.currentEnergy,
                 HSM.baseDefence, HSM.baseAttackPower, HSM.baseEDefence, HSM.baseAttackPower,
                 HSM.EnergyAttacks);
+            Destroy(Hero);
         }
     }
 
