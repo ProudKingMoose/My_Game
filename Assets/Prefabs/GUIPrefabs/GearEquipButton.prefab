@@ -91,8 +91,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   theButton: {fileID: 0}
-  ItemName: 
-  HeroName: 
   item: {fileID: 0}
   gearType: 0
 --- !u!114 &2993077569905768913

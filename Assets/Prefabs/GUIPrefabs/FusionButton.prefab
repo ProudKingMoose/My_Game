@@ -274,4 +274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AbilityToPerform: {fileID: 0}
-  ChosenFusion: 0
+  ItemToUse: {fileID: 0}
+  ChosenFusionInt: 0
+  Abilitytype: 0
+  AbilityLV: 0

@@ -60,5 +60,7 @@ public class BaseClass
     public int effectDamageHold;
     public bool beenEffected;
 
+    public Animator animator;
+
     public List<BaseAttack> aviableAttacks = new List<BaseAttack>();
 }

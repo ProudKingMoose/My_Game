@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
         {
             GameObject Hero = Instantiate(HERO);
             BaseHero HSM = Hero.GetComponent<HeroStatemachine>().hero;
-            GameManager.instance.SavePlayerStats(HSM.theName, HSM.Level.currentXP,
+            instance.SavePlayerStats(HSM.theName, HSM.Level.currentXP,
                 HSM.Level.currentLV, HSM.Level.XPToNextLevel,HSM.Type1, HSM.Type2, HSM.Type1Level, HSM.Type2Level,
                 HSM.baseHP, HSM.currentHP, HSM.baseEnergy, HSM.currentEnergy,
                 HSM.baseDefence, HSM.baseAttackPower, HSM.baseEDefence, HSM.baseAttackPower,

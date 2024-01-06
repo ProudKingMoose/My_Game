@@ -27,6 +27,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private float coldownLimit;
     private float currentColdown;
+    private bool cameraMovement;
     public GameObject Selector;
 
     private float animationsSpeed = 10;
@@ -65,6 +66,7 @@ public class EnemyStateMachine : MonoBehaviour
         calculate = GameObject.Find("CombatManager").GetComponent<TypeEffectivness>();
         startPosition = transform.position;
         alive = true;
+        cameraMovement = true;
     }
 
     // Update is called once per frame
@@ -75,7 +77,11 @@ public class EnemyStateMachine : MonoBehaviour
             CDMGTDuration -= Time.deltaTime;
         if (CDMGTDuration <= 0)
             RemoveDMGText();
-
+        cameraMovement = CSM.cameraMove;
+        if (!cameraMovement)
+        {
+            CameraSystem.instance.ReturnCamera();
+        }
 
 
         switch (currentstate)
@@ -178,11 +184,22 @@ public class EnemyStateMachine : MonoBehaviour
         actionStarted = true;
 
         ANamePanel();
+        Debug.Log(CSM.HandlerList[0].AttackersGameObject);
+        if (cameraMovement)
+            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'E');
+
+        yield return new WaitForSeconds(1.5f);
+
+        if (cameraMovement)
+            CameraSystem.instance.FollowAttackerStep(CSM.HandlerList[0].AttackersGameObject);
 
         Vector3 heroPos = new Vector3(HeroTargeted.transform.position.x - 1.5f, HeroTargeted.transform.position.y, HeroTargeted.transform.position.z);
         while (MoveToCharacters(heroPos)){yield return null;}
 
         yield return new WaitForSeconds(0.5f);
+
+        if (cameraMovement)
+            CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, null);
 
         DoDamage();
 
@@ -190,6 +207,8 @@ public class EnemyStateMachine : MonoBehaviour
 
         Vector3 startPos = startPosition;
         while (MoveToStartPos(startPos)) { yield return null; }
+
+        CameraSystem.instance.ReturnCamera();
 
         CSM.HandlerList.RemoveAt(0);
 

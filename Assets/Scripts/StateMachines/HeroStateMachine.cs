@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static BaseClass;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class HeroStatemachine : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class HeroStatemachine : MonoBehaviour
 
     private float coldownLimit;
     private float currentColdown;
+    private bool cameraMovement;
     public GameObject Selector;
 
     private float animationsSpeed = 10;
@@ -65,6 +67,8 @@ public class HeroStatemachine : MonoBehaviour
         coldownLimit = 1;
         currentColdown = 0;
 
+        hero.animator = GetComponent<Animator>();
+
         AttackNameSpacer = GameObject.Find("AttackNameSpacer").GetComponent<Transform>();
         BattleUI = GameObject.Find("Battle UI").GetComponent<Transform>();
 
@@ -75,6 +79,7 @@ public class HeroStatemachine : MonoBehaviour
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
         currentstate = States.CHECKTURN;
         startPosition = transform.position;
+        cameraMovement = true;
     }
 
     void StatCorrector()
@@ -117,6 +122,11 @@ public class HeroStatemachine : MonoBehaviour
             CDMGTDuration -= Time.deltaTime;
         if (CDMGTDuration <= 0)
             RemoveDMGText();
+        cameraMovement = CSM.cameraMove;
+        if (!cameraMovement)
+        {
+            CameraSystem.instance.ReturnCamera();
+        }
 
         switch (currentstate)
         {
@@ -184,7 +194,7 @@ public class HeroStatemachine : MonoBehaviour
                         }
                     }
 
-                    this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
+                    //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(100, 100, 100, 255);
 
                     CSM.battleState = CombatStateMachine.Action.ALIVECONTROL;
                     alive = false;
@@ -214,11 +224,26 @@ public class HeroStatemachine : MonoBehaviour
         actionStarted = true;
 
         ANamePanel('A');
+        Debug.Log(CSM.HandlerList[0].AttackersGameObject);
+        if (cameraMovement)
+            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'H');
 
+        yield return new WaitForSeconds(1.5f);
+
+        if (cameraMovement)
+            CameraSystem.instance.FollowAttackerStep(CSM.HandlerList[0].AttackersGameObject);
+        hero.animator.SetBool("Running", true);
         Vector3 enemyPos = new Vector3(EnemyTargeted.transform.position.x + 1.5f, EnemyTargeted.transform.position.y, EnemyTargeted.transform.position.z);
         while (MoveToEnemy(enemyPos)) { yield return null; }
 
-        yield return new WaitForSeconds(0.5f);
+        hero.animator.SetBool("Attack", true);
+        yield return new WaitForSeconds(3.5f);
+        //GetCurrentAnimatorStateInfo(layer).length
+
+        hero.animator.SetBool("Attack", false);
+
+        if (cameraMovement)
+            CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, CSM.HandlerList[0].BuffTarget);
 
         DoDamage();
 
@@ -226,6 +251,9 @@ public class HeroStatemachine : MonoBehaviour
 
         Vector3 startPos = startPosition;
         while (MoveToStartPos(startPos)) { yield return null; }
+        hero.animator.SetBool("Running", false);
+
+        CameraSystem.instance.ReturnCamera();
 
         CSM.HandlerList.RemoveAt(0);
 
@@ -243,7 +271,7 @@ public class HeroStatemachine : MonoBehaviour
         if (hero.FusionUses == 0)
         {
             hero.currentFusionType = EnergyType1.None;
-            this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
+            //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
         }
         actionStarted = false;
     }
@@ -261,9 +289,14 @@ public class HeroStatemachine : MonoBehaviour
 
         FusionEnhancement();
 
+        if (cameraMovement)
+            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'H');
+
         yield return new WaitForSeconds(2.5f);
 
         CSM.ActionPanel.SetActive(true);
+
+        CameraSystem.instance.ReturnCamera();
 
         currentstate = States.WAITING;
 
@@ -281,18 +314,26 @@ public class HeroStatemachine : MonoBehaviour
 
         itemName = CSM.HandlerList[0].choosenItem.name;
 
+        if (cameraMovement)
+            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'H');
+
         ANamePanel('B');
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.5f);
+
+        if (cameraMovement)
+            CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, CSM.HandlerList[0].BuffTarget);
 
         ItemUsage();
 
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(1.5f);
+
+        CameraSystem.instance.ReturnCamera();
 
         RemoveAttackText();
         this.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
         Debug.Log("This code is runned or else im angry");
-        CSM.HandlerList[0].BuffTarget.GetComponent<HeroStatemachine>().GetComponent<MeshRenderer>().material.color = Color.blue;
+        //CSM.HandlerList[0].BuffTarget.GetComponent<HeroStatemachine>().GetComponent<MeshRenderer>().material.color = Color.blue;
 
         CSM.HandlerList.RemoveAt(0);
 
@@ -450,7 +491,7 @@ public class HeroStatemachine : MonoBehaviour
         if (hero.currentEnergy > hero.baseEnergy)
             hero.currentEnergy = hero.baseEnergy;
 
-        this.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+        //this.gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
 
         HeroPanelUpdate();
     }
@@ -507,23 +548,23 @@ public class HeroStatemachine : MonoBehaviour
         switch (hero.currentFusionType)
         {
             case (EnergyType1.Heat):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(200, 0, 0, 255);
+                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(200, 0, 0, 255);
                 break;
 
             case (EnergyType1.Chill):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
+                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
                 break;
 
             case (EnergyType1.Zapp):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 200, 200, 255);
+                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 200, 200, 255);
                 break;
 
             case (EnergyType1.Light):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
+                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
                 break;
 
             case (EnergyType1.Darkness):
-                this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 0, 255);
+                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 0, 255);
                 break;
         }
         HeroPanelUpdate();

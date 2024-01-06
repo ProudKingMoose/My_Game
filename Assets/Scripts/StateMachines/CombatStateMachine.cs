@@ -8,7 +8,6 @@ using static BaseClass;
 
 public class CombatStateMachine : MonoBehaviour
 {
-
     public enum Action
     {
         WAIT,
@@ -42,6 +41,7 @@ public class CombatStateMachine : MonoBehaviour
     private GameObject selectedObject;
     private bool selectEnemy;
     private bool selectHero;
+    public bool cameraMove;
 
     private GameObject FSPanel;
 
@@ -84,14 +84,14 @@ public class CombatStateMachine : MonoBehaviour
         int pos = 0;
         for (int i = 0; i < GameManager.instance.amountOfEnemies; i++)
         {
-            GameObject NewEnemy = Instantiate(GameManager.instance.enemiesToBattle[i], spawnPoints[i].position, Quaternion.identity) as GameObject;
+            GameObject NewEnemy = Instantiate(GameManager.instance.enemiesToBattle[i], spawnPoints[i].position, spawnPoints[i].rotation) as GameObject;
             NewEnemy.name = NewEnemy.GetComponent<EnemyStateMachine>().enemy.theName+"_" + i;
             NewEnemy.GetComponent<EnemyStateMachine>().enemy.theName = NewEnemy.name;
             Enemies.Add(NewEnemy);
         }
         foreach (GameObject hero in GameManager.instance.heroesToBattle)
         {
-            GameObject NewHero = Instantiate(hero, HeroPositions[pos].position, Quaternion.identity) as GameObject;
+            GameObject NewHero = Instantiate(hero, HeroPositions[pos].position, HeroPositions[pos].rotation) as GameObject;
             NewHero.name = NewHero.GetComponent<HeroStatemachine>().hero.theName;
             NewHero.GetComponent<HeroStatemachine>().hero.theName = NewHero.name;
             Heroes.Add(NewHero);
@@ -105,6 +105,7 @@ public class CombatStateMachine : MonoBehaviour
 
         selectEnemy = false;
         selectHero = false;
+        cameraMove = true;
         battleState = Action.WAIT;
         //Enemies.AddRange(GameObject.FindGameObjectsWithTag ("Enemy"));
         //Heroes.AddRange(GameObject.FindGameObjectsWithTag("Hero"));
@@ -288,6 +289,7 @@ public class CombatStateMachine : MonoBehaviour
     //The Button To Do A Melee Attack
     public void Input1()
     {
+        cameraMove = false;
         ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
         ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
         ChoisefromHero.Type = "Hero";
@@ -299,12 +301,14 @@ public class CombatStateMachine : MonoBehaviour
     //The Script For Selecting A Enemy
     public void Input2(GameObject selectedEnemy)
     {
+        cameraMove = true;
         ChoisefromHero.AttackTarget = selectedEnemy;
         Debug.Log (ChoisefromHero.AttackTarget);
         HeroInput = HeroGUI.DONE;
     }
     public void Input2Buff(GameObject selectedHero)
     {
+        cameraMove = true;
         ChoisefromHero.BuffTarget = selectedHero;
         HeroStatemachine HSM = HerosReadyToAttack[0].GetComponent<HeroStatemachine>();
         HeroInput = HeroGUI.DONE;
@@ -313,6 +317,7 @@ public class CombatStateMachine : MonoBehaviour
 
     public void Input3(BaseAttack choosenAbility, EnergyType1 AbilityType, EnergyLevel AbilityLV)
     {
+        cameraMove = false;
         ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
         ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
         ChoisefromHero.Type = "Hero";
