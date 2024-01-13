@@ -184,14 +184,13 @@ public class EnemyStateMachine : MonoBehaviour
         actionStarted = true;
 
         ANamePanel();
-        Debug.Log(CSM.HandlerList[0].AttackersGameObject);
         if (cameraMovement)
-            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'E');
+            CameraSystem.instance.FirstCameraFix(this.gameObject, 'E');
 
         yield return new WaitForSeconds(1.5f);
 
         if (cameraMovement)
-            CameraSystem.instance.FollowAttackerStep(CSM.HandlerList[0].AttackersGameObject);
+            CameraSystem.instance.FollowAttackerStep(this.gameObject);
 
         Vector3 heroPos = new Vector3(HeroTargeted.transform.position.x - 1.5f, HeroTargeted.transform.position.y, HeroTargeted.transform.position.z);
         while (MoveToCharacters(heroPos)){yield return null;}

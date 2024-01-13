@@ -29,6 +29,9 @@ public class BaseClass
     public EnergyType1 Type2;
     public EnergyLevel Type2Level;
 
+    public List<GameObject> FusionElements;
+    public GameObject CoreParticles;
+
     public LevelSystem Level;
 
     public float baseHP;

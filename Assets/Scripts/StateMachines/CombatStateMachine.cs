@@ -155,7 +155,10 @@ public class CombatStateMachine : MonoBehaviour
                     if (HandlerList[0].AttackTarget != null)
                     {
                         HSM.EnemyTargeted = HandlerList[0].AttackTarget;
-                        HSM.currentstate = HeroStatemachine.States.ATTACKING;
+                        if (HandlerList[0].choosenAttack.energyCost == 0)
+                            HSM.currentstate = HeroStatemachine.States.ATTACKING;
+                        else
+                            HSM.currentstate = HeroStatemachine.States.ENERGYATTACK;
                     }
                     else if (HandlerList[0].BuffTarget != null)
                     {
@@ -355,6 +358,7 @@ public class CombatStateMachine : MonoBehaviour
 
     public void Input7(RestoreObject item)
     {
+        cameraMove = false;
         ChoisefromHero.Attacker = HerosReadyToAttack[0].name;
         ChoisefromHero.AttackersGameObject = HerosReadyToAttack[0];
         ChoisefromHero.Type = "Hero";
@@ -402,77 +406,54 @@ public class CombatStateMachine : MonoBehaviour
         {
             interactableLayer |= (1 << enemyLayer);
             interactableLayer &= ~(1 << heroLayer);
+        }
+        if (selectType == "Hero")
+        {
+            interactableLayer &= ~(1 << enemyLayer);
+            interactableLayer |= (1 << heroLayer);
+        }
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+        {
+            GameObject objectHit = hit.collider.gameObject;
+            if (objectHit.tag == "Hero" || objectHit.tag == "Enemy")
+            {
+                if (!objectHit.transform.Find("Selector").gameObject.activeSelf)
+                {
+                    objectHit.transform.Find("Selector").gameObject.SetActive(true);
+                    if (objectHit.tag == "Hero")
+                        objectHit.transform.Find("Selector").gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+                }
+
+                if (hoveredObject != objectHit)
+                    objectHit.transform.Find("Selector").gameObject.SetActive(false);
+
+                hoveredObject = objectHit;
+            }
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
             {
-                GameObject curHoveredObject = hit.collider.gameObject;
+                GameObject objectHit = hit.collider.gameObject;
 
-                if (curHoveredObject.tag != "DeadEnemy")
+                if (!objectHit.CompareTag("DeadEnemy") || !objectHit.CompareTag("DeadHero"))
                 {
-                    curHoveredObject.transform.Find("Selector").gameObject.SetActive(true);
-
-                    if (curHoveredObject != hoveredObject)
+                    if (selectType == "Hero")
                     {
-                        curHoveredObject.transform.Find("Selector").gameObject.SetActive(false);
+                        selectHero = false;
+                        selectedObject = objectHit;
+                        selectedObject.transform.Find("Selector").gameObject.SetActive(false);
+                        objectHit.transform.Find("Selector").gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                        Input2Buff(selectedObject);
                     }
-                    hoveredObject = curHoveredObject;
-                }
-            }
-            else if (hoveredObject != null)
-                hoveredObject.transform.Find("Selector").gameObject.SetActive(false);
-
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (hoveredObject.tag != "DeadEnemy")
-                {
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
+                    if (selectType == "Enemy")
                     {
                         selectEnemy = false;
                         selectedObject = hit.collider.gameObject;
                         selectedObject.transform.Find("Selector").gameObject.SetActive(false);
                         Input2(selectedObject);
-                    }
-                }
-            }
-        }
-
-        if (selectType == "Hero")
-        {
-            interactableLayer &= ~(1 << enemyLayer);
-            interactableLayer |= (1 << heroLayer);
-
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
-            {
-                GameObject curHoveredObject = hit.collider.gameObject;
-
-                if (curHoveredObject.tag != "DeadHero")
-                {
-                    if (curHoveredObject.transform.Find("Selector").gameObject.activeSelf == false)
-                        curHoveredObject.transform.Find("Selector").gameObject.SetActive(true);
-                    else
-                        curHoveredObject.transform.Find("Selector").gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
-
-                    if (curHoveredObject != hoveredObject)
-                    {
-                        curHoveredObject.transform.Find("Selector").gameObject.SetActive(false);
-                    }
-                    hoveredObject = curHoveredObject;
-                }
-            }
-            else if (hoveredObject != null)
-                hoveredObject.transform.Find("Selector").gameObject.SetActive(false);
-
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (hoveredObject.tag != "DeadHero")
-                {
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, interactableLayer))
-                    {
-                        selectHero = false;
-                        selectedObject = hit.collider.gameObject;
-                        selectedObject.transform.Find("Selector").gameObject.SetActive(false);
-                        Input2Buff(selectedObject);
                     }
                 }
             }

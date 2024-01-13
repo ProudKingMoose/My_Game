@@ -17,6 +17,8 @@ public class CameraSystem : MonoBehaviour
     private bool rotationF;
     private bool action = false;
     private char type;
+    private Quaternion lookRotation;
+    private Vector3 targetedDirection;
     GameObject currentUser;
     private void Awake()
     {
@@ -27,9 +29,9 @@ public class CameraSystem : MonoBehaviour
     }
     public void FirstCameraFix(GameObject user, char Type)
     {
-        action = true;
-        type = Type;
         currentUser = user;
+        type = Type;
+        action = true;
         Debug.Log("this code is runned");
         Debug.Log(user);
         transform.position = user.transform.position;
@@ -46,6 +48,7 @@ public class CameraSystem : MonoBehaviour
 
     public void CameraOnTargetTacker(GameObject Attacktarget, GameObject Bufftarget)
     {
+        action = false;
         if (Attacktarget != null)
         {
             transform.SetParent(null);
@@ -57,12 +60,13 @@ public class CameraSystem : MonoBehaviour
 
     public void ReturnCamera()
     {
-        action = false;
         currentUser = null;
         transform.position = startingPosition;
         transform.rotation = startingRotation;
         Zoom = false;
         rotationF = default;
+        type = default;
+
     }
     private void Update()
     {
@@ -77,26 +81,35 @@ public class CameraSystem : MonoBehaviour
         else if (!Zoom && cinemachineVirtualCamera.m_Lens.FieldOfView != StartingFieldOfView)
             cinemachineVirtualCamera.m_Lens.FieldOfView = Mathf.Lerp(cinemachineVirtualCamera.m_Lens.FieldOfView, StartingFieldOfView, Time.deltaTime * 10);
     }
-    private void Rotations()
+    private void Rotations()//It s better now but polish it if you have time
     {
         Debug.Log(rotationF);
         if (rotationF)
         {
-            if (type == 'E' && transform.eulerAngles.y != currentUser.transform.eulerAngles.y - rotationlength)
+            if (type == 'E')
             {
-                Vector3 eulerRotation = new Vector3(transform.eulerAngles.x, Mathf.Lerp(transform.eulerAngles.y, currentUser.transform.eulerAngles.y + rotationlength, Time.deltaTime * 5), transform.eulerAngles.z);
-                transform.rotation = Quaternion.Euler(eulerRotation);
+                targetedDirection = -(new Vector3(currentUser.transform.position.x - 1, currentUser.transform.position.y, currentUser.transform.position.z) - transform.position).normalized;
+
+                lookRotation = Quaternion.LookRotation(targetedDirection);
+
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 360);
             }
-            else if (type == 'H' && transform.eulerAngles.y != currentUser.transform.eulerAngles.y + rotationlength)
+            else if (type == 'H' && transform.rotation.y != currentUser.transform.eulerAngles.y + rotationlength)
             {
-                Vector3 eulerRotation = new Vector3(transform.eulerAngles.x, Mathf.Lerp(transform.eulerAngles.y, currentUser.transform.eulerAngles.y - rotationlength, Time.deltaTime * 5), transform.eulerAngles.z);
-                transform.rotation = Quaternion.Euler(eulerRotation);
+                targetedDirection = (new Vector3(currentUser.transform.position.x + 1, currentUser.transform.position.y, currentUser.transform.position.z) - transform.position).normalized;
+
+                lookRotation = Quaternion.LookRotation(targetedDirection);
+
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 360);
             }
         }
-        else if (!rotationF && transform.eulerAngles.y != currentUser.transform.eulerAngles.y)
+        else if (!rotationF)
         {
-            Vector3 eulerRotation = new Vector3(transform.eulerAngles.x, Mathf.Lerp(transform.eulerAngles.y, currentUser.transform.eulerAngles.y, Time.deltaTime * 5), transform.eulerAngles.z);
-            transform.rotation = Quaternion.Euler(eulerRotation);
+            targetedDirection = (new Vector3(currentUser.transform.position.x - 1, currentUser.transform.position.y, currentUser.transform.position.z) - transform.position).normalized;
+
+            lookRotation = Quaternion.LookRotation(targetedDirection);
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 360);
         }
     }
 }

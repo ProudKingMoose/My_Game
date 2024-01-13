@@ -10053,6 +10053,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Random Encounter Collider
       objectReference: {fileID: 0}
+    - target: {fileID: 6113439772642855269, guid: 5165cd663a90e27459a45252514a2b2b,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6113439772642855269, guid: 5165cd663a90e27459a45252514a2b2b,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dd287c9ef43d2a1458cba3d3c841d18b, type: 2}
     - target: {fileID: 8149124784166979148, guid: 5165cd663a90e27459a45252514a2b2b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12511,6 +12521,26 @@ PrefabInstance:
       propertyPath: m_IsKinematic
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7698638647871870530, guid: 2b1ea097f09358245ac41605032c45e3,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7698638647871870530, guid: 2b1ea097f09358245ac41605032c45e3,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 54acea5c91cb95a43af18fe1f8bab06f, type: 2}
+    - target: {fileID: 8255266487555919857, guid: 2b1ea097f09358245ac41605032c45e3,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8255266487555919857, guid: 2b1ea097f09358245ac41605032c45e3,
+        type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 54acea5c91cb95a43af18fe1f8bab06f, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

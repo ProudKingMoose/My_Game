@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using static BaseClass;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class HeroStatemachine : MonoBehaviour
 {
@@ -18,6 +16,7 @@ public class HeroStatemachine : MonoBehaviour
         ADDTOLIST,
         WAITING,
         ATTACKING,
+        ENERGYATTACK,
         FUSING,
         BUFFING,
         CHECKTURN,
@@ -33,6 +32,7 @@ public class HeroStatemachine : MonoBehaviour
 
     private float animationsSpeed = 10;
     private Vector3 startPosition;
+    private Quaternion startRotation;
     public GameObject EnemyTargeted;
 
     private bool alive = true;
@@ -55,6 +55,9 @@ public class HeroStatemachine : MonoBehaviour
     private float DMGTDuration = 1f;
     private float CDMGTDuration = 0;
 
+
+    private Quaternion lookRotation;
+    private Vector3 targetedDirection;
 
     void Start()
     {
@@ -79,6 +82,7 @@ public class HeroStatemachine : MonoBehaviour
         CSM = GameObject.Find("CombatManager").GetComponent<CombatStateMachine>();
         currentstate = States.CHECKTURN;
         startPosition = transform.position;
+        startRotation = transform.rotation;
         cameraMovement = true;
     }
 
@@ -157,6 +161,10 @@ public class HeroStatemachine : MonoBehaviour
                 StartCoroutine(HeroMeleeAttack());
             break;
 
+            case (States.ENERGYATTACK):
+                StartCoroutine(HeroEnergyAttack());
+                break;
+
             case (States.FUSING):
                 StartCoroutine(FusionStance());
                 break;
@@ -226,21 +234,20 @@ public class HeroStatemachine : MonoBehaviour
         ANamePanel('A');
         Debug.Log(CSM.HandlerList[0].AttackersGameObject);
         if (cameraMovement)
-            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'H');
+            CameraSystem.instance.FirstCameraFix(this.gameObject, 'H');
 
         yield return new WaitForSeconds(1.5f);
 
         if (cameraMovement)
-            CameraSystem.instance.FollowAttackerStep(CSM.HandlerList[0].AttackersGameObject);
-        hero.animator.SetBool("Running", true);
+            CameraSystem.instance.FollowAttackerStep(this.gameObject);
+        hero.animator.SetTrigger("Running");
+
         Vector3 enemyPos = new Vector3(EnemyTargeted.transform.position.x + 1.5f, EnemyTargeted.transform.position.y, EnemyTargeted.transform.position.z);
         while (MoveToEnemy(enemyPos)) { yield return null; }
 
-        hero.animator.SetBool("Attack", true);
-        yield return new WaitForSeconds(3.5f);
-        //GetCurrentAnimatorStateInfo(layer).length
+        hero.animator.SetTrigger("Attack");
 
-        hero.animator.SetBool("Attack", false);
+        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length+ + 0.5f);
 
         if (cameraMovement)
             CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, CSM.HandlerList[0].BuffTarget);
@@ -249,9 +256,10 @@ public class HeroStatemachine : MonoBehaviour
 
         RemoveAttackText();
 
+        hero.animator.SetTrigger("Running");
+
         Vector3 startPos = startPosition;
         while (MoveToStartPos(startPos)) { yield return null; }
-        hero.animator.SetBool("Running", false);
 
         CameraSystem.instance.ReturnCamera();
 
@@ -271,7 +279,71 @@ public class HeroStatemachine : MonoBehaviour
         if (hero.FusionUses == 0)
         {
             hero.currentFusionType = EnergyType1.None;
-            //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
+            foreach (GameObject fusion in hero.FusionElements)
+                fusion.SetActive(false);
+        }
+        actionStarted = false;
+    }
+
+    private IEnumerator HeroEnergyAttack()
+    {
+        if (actionStarted)
+        {
+            yield break;
+        }
+
+        attackName = CSM.HandlerList[0].choosenAttack.name;
+
+        actionStarted = true;
+
+        ANamePanel('A');
+        Debug.Log(CSM.HandlerList[0].AttackersGameObject);
+        if (cameraMovement)
+            CameraSystem.instance.FirstCameraFix(this.gameObject, 'H');
+
+        Vector3 enemyPos = new Vector3(EnemyTargeted.transform.position.x, EnemyTargeted.transform.position.y, EnemyTargeted.transform.position.z);
+        while (RotateToTarget(enemyPos)) { yield return null; }
+
+        yield return new WaitForSeconds(1.5f);
+
+        if (cameraMovement)
+            CameraSystem.instance.FollowAttackerStep(this.gameObject);
+
+        hero.animator.SetTrigger("Cast");
+
+        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length);
+
+
+        if (cameraMovement)
+            CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, CSM.HandlerList[0].BuffTarget);
+
+        DoDamage();
+
+        RemoveAttackText();
+
+        Vector3 startPos = startPosition;
+        while (RotateToStartRot(startPos)) { yield return null; }
+
+        CameraSystem.instance.ReturnCamera();
+
+        CSM.HandlerList.RemoveAt(0);
+
+        if (CSM.HerosReadyToAttack.Count == 0)
+            effectStart = true;
+
+        if (CSM.battleState != CombatStateMachine.Action.WIN && CSM.battleState != CombatStateMachine.Action.LOSE)
+        {
+            CSM.battleState = CombatStateMachine.Action.WAIT;
+
+            currentColdown = 0;
+            currentstate = States.WAITING;
+        }
+
+        if (hero.FusionUses == 0)
+        {
+            hero.currentFusionType = EnergyType1.None;
+            foreach (GameObject fusion in hero.FusionElements)
+                fusion.SetActive(false);
         }
         actionStarted = false;
     }
@@ -290,9 +362,13 @@ public class HeroStatemachine : MonoBehaviour
         FusionEnhancement();
 
         if (cameraMovement)
-            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'H');
+            CameraSystem.instance.FirstCameraFix(this.gameObject, 'H');
 
-        yield return new WaitForSeconds(2.5f);
+        hero.animator.SetTrigger("Fusion");
+
+        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length + 1f);
+
+        hero.CoreParticles.SetActive(false);
 
         CSM.ActionPanel.SetActive(true);
 
@@ -315,11 +391,23 @@ public class HeroStatemachine : MonoBehaviour
         itemName = CSM.HandlerList[0].choosenItem.name;
 
         if (cameraMovement)
-            CameraSystem.instance.FirstCameraFix(CSM.HandlerList[0].AttackersGameObject, 'H');
+            CameraSystem.instance.FirstCameraFix(this.gameObject, 'H');
 
         ANamePanel('B');
 
-        yield return new WaitForSeconds(1.5f);
+
+        Vector3 StartPoRot = startPosition;
+        while (RotateToTarget(CSM.HandlerList[0].BuffTarget.transform.position)) { yield return null; }//There is some kind of bug here that should be fixed
+
+        hero.animator.SetTrigger("Cast");
+
+
+        Debug.Log(hero.animator.GetCurrentAnimatorClipInfo(0).Length + " Seconds");
+
+        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length);
+
+
+        while (RotateToStartRot(StartPoRot)) { yield return null; }
 
         if (cameraMovement)
             CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, CSM.HandlerList[0].BuffTarget);
@@ -331,7 +419,7 @@ public class HeroStatemachine : MonoBehaviour
         CameraSystem.instance.ReturnCamera();
 
         RemoveAttackText();
-        this.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+        //this.gameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
         Debug.Log("This code is runned or else im angry");
         //CSM.HandlerList[0].BuffTarget.GetComponent<HeroStatemachine>().GetComponent<MeshRenderer>().material.color = Color.blue;
 
@@ -358,6 +446,37 @@ public class HeroStatemachine : MonoBehaviour
     private bool MoveToStartPos(Vector3 target)
     {
         return target != (transform.position = Vector3.MoveTowards(transform.position, target, animationsSpeed * Time.deltaTime));
+    }
+
+    private bool RotateToTarget(Vector3 target)
+    {
+        if (target == transform.position)
+            return false;
+
+        targetedDirection = (target - transform.position).normalized;
+
+        lookRotation = Quaternion.LookRotation(targetedDirection);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 120);
+
+        if (lookRotation == transform.rotation)
+            return false;
+        else
+            return true;
+    }
+
+    private bool RotateToStartRot(Vector3 target)
+    {
+        targetedDirection = (new Vector3(target.x - 1, target.y, target.z) - transform.position).normalized;
+
+        lookRotation = Quaternion.LookRotation(targetedDirection);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 120);
+
+        if (lookRotation == transform.rotation)
+            return false;
+        else
+            return true;
     }
 
     void ANamePanel(char type)
@@ -548,23 +667,58 @@ public class HeroStatemachine : MonoBehaviour
         switch (hero.currentFusionType)
         {
             case (EnergyType1.Heat):
-                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(200, 0, 0, 255);
+                foreach (GameObject element in hero.FusionElements)
+                {
+                    if (element.GetComponent<ParticleType>().type == EnergyType1.Heat)
+                    {
+                        element.SetActive(true);
+                        hero.CoreParticles.SetActive(true);
+                    }
+                }
                 break;
 
             case (EnergyType1.Chill):
-                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 200, 255);
+                foreach (GameObject element in hero.FusionElements)
+                {
+                    if (element.GetComponent<ParticleType>().type == EnergyType1.Chill)
+                    {
+                        element.SetActive(true);
+                        hero.CoreParticles.SetActive(true);
+                    }
+                }
                 break;
 
             case (EnergyType1.Zapp):
-                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 200, 200, 255);
+                foreach (GameObject element in hero.FusionElements)
+                {
+                    if (element.GetComponent<ParticleType>().type == EnergyType1.Zapp)
+                    {
+                        element.SetActive(true);
+                        hero.CoreParticles.SetActive(true);
+                    }
+                }
                 break;
 
             case (EnergyType1.Light):
-                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
+                foreach (GameObject element in hero.FusionElements)
+                {
+                    if (element.GetComponent<ParticleType>().type == EnergyType1.Light)
+                    {
+                        element.SetActive(true);
+                        hero.CoreParticles.SetActive(true);
+                    }
+                }
                 break;
 
             case (EnergyType1.Darkness):
-                //this.gameObject.GetComponent<MeshRenderer>().material.color = new Color32(0, 0, 0, 255);
+                foreach (GameObject element in hero.FusionElements)
+                {
+                    if (element.GetComponent<ParticleType>().type == EnergyType1.Darkness)
+                    {
+                        element.SetActive(true);
+                        hero.CoreParticles.SetActive(true);
+                    }
+                }
                 break;
         }
         HeroPanelUpdate();
