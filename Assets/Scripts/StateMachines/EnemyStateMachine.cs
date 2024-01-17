@@ -55,6 +55,7 @@ public class EnemyStateMachine : MonoBehaviour
     
     void Start()
     {
+        Level();
         coldownLimit = 4;
         currentColdown = 0;
 
@@ -67,6 +68,20 @@ public class EnemyStateMachine : MonoBehaviour
         startPosition = transform.position;
         alive = true;
         cameraMovement = true;
+        enemy.CoinAmount = 10 * enemy.Level.currentLV;
+    }
+
+    private void Level()
+    {
+        int heroHighestLevel = 0;
+        foreach (GameObject hero in GameManager.instance.HeroesUnlocked)
+        {
+            if (heroHighestLevel < hero.GetComponent<HeroStatemachine>().hero.Level.currentLV)
+            {
+                heroHighestLevel = hero.GetComponent<HeroStatemachine>().hero.Level.currentLV;
+            }
+        }
+        enemy.Level.currentLV = heroHighestLevel;
     }
 
     // Update is called once per frame
@@ -184,21 +199,15 @@ public class EnemyStateMachine : MonoBehaviour
         actionStarted = true;
 
         ANamePanel();
-        if (cameraMovement)
-            CameraSystem.instance.FirstCameraFix(this.gameObject, 'E');
 
         yield return new WaitForSeconds(1.5f);
 
-        if (cameraMovement)
-            CameraSystem.instance.FollowAttackerStep(this.gameObject);
 
         Vector3 heroPos = new Vector3(HeroTargeted.transform.position.x - 1.5f, HeroTargeted.transform.position.y, HeroTargeted.transform.position.z);
         while (MoveToCharacters(heroPos)){yield return null;}
 
         yield return new WaitForSeconds(0.5f);
 
-        if (cameraMovement)
-            CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, null);
 
         DoDamage();
 
@@ -206,8 +215,6 @@ public class EnemyStateMachine : MonoBehaviour
 
         Vector3 startPos = startPosition;
         while (MoveToStartPos(startPos)) { yield return null; }
-
-        CameraSystem.instance.ReturnCamera();
 
         CSM.HandlerList.RemoveAt(0);
 

@@ -208,14 +208,8 @@ public class CombatStateMachine : MonoBehaviour
             break;
             case (Action.WIN):
                 Debug.Log("YOU WIN");
-                for (int i = 0; i < Heroes.Count; i++)
-                {
-                    Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
-                }
-                SaveStats();
-                GameManager.instance.LoadSceneAfterBattle();
-                GameManager.instance.state = GameManager.Gamestates.OverWorld;
-                GameManager.instance.enemiesToBattle.Clear();
+                if (FightWon())
+                    ChangeScene();
 
             break;
         }
@@ -258,6 +252,7 @@ public class CombatStateMachine : MonoBehaviour
     {
         foreach (var Hero in Heroes)
         {
+            GameManager.instance.Coins += CoinsFromBattle();
             Hero.GetComponent<HeroStatemachine>().hero.Level.AddXP(XPFromBattle());
             Hero.GetComponent<HeroStatemachine>().hero.Level.XPToNextLevel = Hero.GetComponent<HeroStatemachine>().hero.Level.GetXPForLevel(Hero.GetComponent<HeroStatemachine>().hero.Level.currentLV);
             BaseHero HSM = Hero.GetComponent<HeroStatemachine>().hero;
@@ -287,6 +282,17 @@ public class CombatStateMachine : MonoBehaviour
             XP += Enemy.GetComponent<EnemyStateMachine>().enemy.XPValue;
         }
         return XP;
+    }
+
+    private int CoinsFromBattle()
+    {
+        int Coins = 0;
+
+        foreach (GameObject Enemy in DeadEnemies)
+        {
+            Coins += Enemy.GetComponent<EnemyStateMachine>().enemy.CoinAmount;
+        }
+        return Coins;
     }
 
     //The Button To Do A Melee Attack
@@ -373,6 +379,29 @@ public class CombatStateMachine : MonoBehaviour
     {
         ActionPanel.SetActive(false);
         ItemPanel.SetActive(true);
+    }
+    private bool FightWon()
+    {
+        foreach (GameObject hero in Heroes)
+        {
+            hero.GetComponent<HeroStatemachine>().hero.animator.SetBool("Win", true);
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+            return true;
+        else
+            return false;
+    }
+
+    private void ChangeScene()
+    {
+        for (int i = 0; i < Heroes.Count; i++)
+        {
+            Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
+        }
+        SaveStats();
+        GameManager.instance.LoadSceneAfterBattle();
+        GameManager.instance.state = GameManager.Gamestates.OverWorld;
+        GameManager.instance.enemiesToBattle.Clear();
     }
 
     void HeroInputDone()

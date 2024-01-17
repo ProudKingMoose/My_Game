@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public RegionData currentRegion;
 
     public Inventory inventory;
+    public int Coins;
 
     public List<ItemObject> item1;
     public ItemObject item2;

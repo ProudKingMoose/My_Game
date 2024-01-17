@@ -6,4 +6,5 @@ using UnityEngine;
 public class BaseEnemy: BaseClass
 {
     public int XPValue;
+    public int CoinAmount;
 }

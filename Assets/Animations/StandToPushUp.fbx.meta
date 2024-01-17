@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f3fc2b2242e7cba4489ffdeacce5ff61
+guid: 1dba5d2ea097a404c9ebede3db661e81
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Death
+      name: StandToPushUp
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 117
+      lastFrame: 55
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

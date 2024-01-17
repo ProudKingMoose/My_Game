@@ -10,7 +10,7 @@ public class CameraSystem : MonoBehaviour
 
     private Vector3 startingPosition;
     private Quaternion startingRotation;
-    private float targetFieldOfView = 30;
+    private float targetFieldOfView = 40;
     private float StartingFieldOfView = 60;
     private float rotationlength = 180;
     private bool Zoom = false;
@@ -34,7 +34,7 @@ public class CameraSystem : MonoBehaviour
         action = true;
         Debug.Log("this code is runned");
         Debug.Log(user);
-        transform.position = user.transform.position;
+        transform.position = new Vector3(user.transform.position.x, user.transform.position.y + 1.5f, user.transform.position.z);
         rotationF = true;
 
         Zoom = true;
@@ -92,7 +92,7 @@ public class CameraSystem : MonoBehaviour
 
                 lookRotation = Quaternion.LookRotation(targetedDirection);
 
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 360);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 8);
             }
             else if (type == 'H' && transform.rotation.y != currentUser.transform.eulerAngles.y + rotationlength)
             {
@@ -100,7 +100,7 @@ public class CameraSystem : MonoBehaviour
 
                 lookRotation = Quaternion.LookRotation(targetedDirection);
 
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 360);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 8);
             }
         }
         else if (!rotationF)
@@ -109,7 +109,7 @@ public class CameraSystem : MonoBehaviour
 
             lookRotation = Quaternion.LookRotation(targetedDirection);
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, lookRotation, Time.deltaTime * 360);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 8);
         }
     }
 }

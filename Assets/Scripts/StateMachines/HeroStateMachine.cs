@@ -117,6 +117,7 @@ public class HeroStatemachine : MonoBehaviour
     public void OnLevelUp()
     {
         Debug.Log("I Level Up");
+        LevelStatsAlgorithm();
     }
 
     // Update is called once per frame
@@ -179,6 +180,8 @@ public class HeroStatemachine : MonoBehaviour
                 }
                 else
                 {
+                    hero.animator.SetTrigger("Dead");
+
                     this.gameObject.tag = "DeadHero";
 
                     CSM.HerosReadyToAttack.Remove(this.gameObject);
@@ -247,7 +250,9 @@ public class HeroStatemachine : MonoBehaviour
 
         hero.animator.SetTrigger("Attack");
 
-        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length+ + 0.5f);
+        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length);
 
         if (cameraMovement)
             CameraSystem.instance.CameraOnTargetTacker(CSM.HandlerList[0].AttackTarget, CSM.HandlerList[0].BuffTarget);
@@ -311,6 +316,8 @@ public class HeroStatemachine : MonoBehaviour
 
         hero.animator.SetTrigger("Cast");
 
+        yield return new WaitForSeconds(0.5f);
+
         yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length);
 
 
@@ -366,7 +373,9 @@ public class HeroStatemachine : MonoBehaviour
 
         hero.animator.SetTrigger("Fusion");
 
-        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length + 1f);
+        yield return new WaitForSeconds(0.5f);
+
+        yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length + 0.5f);
 
         hero.CoreParticles.SetActive(false);
 
@@ -403,6 +412,8 @@ public class HeroStatemachine : MonoBehaviour
 
 
         Debug.Log(hero.animator.GetCurrentAnimatorClipInfo(0).Length + " Seconds");
+
+        yield return new WaitForSeconds(0.5f);
 
         yield return new WaitForSeconds(hero.animator.GetCurrentAnimatorClipInfo(0).Length);
 
@@ -776,6 +787,17 @@ public class HeroStatemachine : MonoBehaviour
 
     void LevelStatsAlgorithm()
     {
-
+        if (hero.Level.currentLV % 2 == 0)
+        {
+            hero.baseAttackPower += 1;
+            hero.baseDefence += 1;
+            hero.baseHP += 20;
+        }
+        if(hero.Level.currentLV%2 != 0)
+        {
+            hero.baseEAttackPower += 1;
+            hero.baseEDefence += 1;
+            hero.baseEnergy += 10;
+        }
     }
 }

@@ -5,32 +5,33 @@ using UnityEngine;
 public class MovementScript : MonoBehaviour
 {
     public float speed;
-    public float friction;
+    public float vSpeed;
+    public float gravity = 9.8f;
 
     float horizontal;
     float vertical;
 
     public Transform orientation;
 
+    private bool sprinting;
+
     Vector3 movementDirection;
     Vector3 currentPos, lastPos;
 
-    Rigidbody rb;
+    CharacterController CharacterController;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.freezeRotation = true;
+        CharacterController = GetComponent<CharacterController>();
 
-        transform.position = GameManager.instance.nextHeroPosition;
+        transform.position = GameManager.instance.lastHeroPosition;
+        sprinting = false;
     }
 
 
     void Update()
     {
         Inputs();
-
-        rb.drag = friction;
     }
 
     void FixedUpdate()
@@ -48,6 +49,17 @@ public class MovementScript : MonoBehaviour
 
     private void Inputs()
     {
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !sprinting)
+        {
+            speed *= 2f;
+            sprinting = true;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftControl) && sprinting)
+        {
+            speed /= 2f;
+            sprinting = false;
+        }
+
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
     }
@@ -56,17 +68,19 @@ public class MovementScript : MonoBehaviour
     {
         movementDirection = orientation.forward * vertical + orientation.right * horizontal;
 
+        CharacterController.Move(movementDirection.normalized * speed * Time.deltaTime);
 
-        rb.AddForce(movementDirection * speed * 10, ForceMode.Force);
-    }
+        if (CharacterController.isGrounded)
+        {
+            vSpeed = 0;
+        }
+        else
+        {
+            vSpeed -= gravity * Time.deltaTime;
+            movementDirection.y = vSpeed;
+            CharacterController.Move(movementDirection * Time.deltaTime);
+        }
 
-    private void NormalizeSpeed()
-    {
-        Vector3 curVel = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-
-        Vector3 newVel = Vector3.Normalize(curVel);
-
-        rb.velocity = newVel;
     }
 
     private void OnTriggerEnter(Collider other)
