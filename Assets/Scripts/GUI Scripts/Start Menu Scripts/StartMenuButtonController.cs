@@ -25,11 +25,11 @@ public class StartMenuButtonController : MonoBehaviour
                     if (index < maxIndex)
                         index++;
                     else
-                        index = 0;
+                        index = 1;
                 }
                 if (Input.GetAxis("Vertical") > 0)
                 {
-                    if (index > 0)
+                    if (index > 1)
                         index--;
                     else
                         index = maxIndex;

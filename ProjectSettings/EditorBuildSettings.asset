@@ -8,4 +8,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BattleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/AdventureScene.unity
+    guid: cd342b6825820644d828d28ddbce2606
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

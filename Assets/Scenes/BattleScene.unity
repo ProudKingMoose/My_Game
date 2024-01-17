@@ -154,7 +154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.56531525, y: 0.57500005}
   m_AnchorMax: {x: 0.81500006, y: 0.94444454}
-  m_AnchoredPosition: {x: 0, y: 0.4607849}
+  m_AnchoredPosition: {x: 0, y: 0.4607544}
   m_SizeDelta: {x: 279.65, y: 234.9649}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &58931196
@@ -565,7 +565,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22975291, y: -0.000000018722702, z: 0.00000000441983, w: 0.973249}
+  m_LocalRotation: {x: 0.22975291, y: 0.000000018722702, z: -0.00000000441983, w: 0.973249}
   m_LocalPosition: {x: 0, y: 5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -862,7 +862,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 738777698}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22975291, y: -0.000000018722702, z: 0.00000000441983, w: 0.973249}
+  m_LocalRotation: {x: 0.22975291, y: 0.000000018722702, z: -0.00000000441983, w: 0.973249}
   m_LocalPosition: {x: 0, y: 5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -911,6 +911,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   cameraMove: 0
+  attackSound: {fileID: 8300000, guid: 4acefefec9b2ab14ab61f97f2c49a265, type: 3}
   HeroInput: 0
   HerosReadyToAttack: []
   ActionPanel: {fileID: 1842735023}
@@ -1743,7 +1744,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.24875, y: 0.10444445}
   m_AnchorMax: {x: 0.7453864, y: 0.23333333}
-  m_AnchoredPosition: {x: -0.51501465, y: 0.64508057}
+  m_AnchoredPosition: {x: -0.51501465, y: 0.64501953}
   m_SizeDelta: {x: 0.22989655, y: 0.69039917}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1805621318
@@ -1985,7 +1986,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.81500006, y: 0.57500005}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: -0.064941406}
+  m_AnchoredPosition: {x: 0, y: -0.064941406}
   m_SizeDelta: {x: 0.00012207, y: 0.12997}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2024774676
@@ -2106,13 +2107,13 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 772765651}
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1289856406}
   - {fileID: 1112853993}
   - {fileID: 178208399}
-  - {fileID: 772765651}
   - {fileID: 272310422}
   - {fileID: 1655280558}
   - {fileID: 988017281}

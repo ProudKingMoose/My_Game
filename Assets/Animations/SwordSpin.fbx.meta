@@ -58,7 +58,7 @@ ModelImporter:
       - time: 0.37873134
         functionName: HitSound
         data: 
-        objectReferenceParameter: {fileID: 11500000, guid: cbb506cab843c0b4bad4de30b483315f,
+        objectReferenceParameter: {fileID: 11500000, guid: 7af875f0914f7324a8001c5121255ef4,
           type: 3}
         floatParameter: 0
         intParameter: 0

@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 
     public Vector3 lastHeroPosition, nextHeroPosition;
 
+    public AudioSource audioSource;
 
     public List<HeroStatStorage> StatStorage = new List<HeroStatStorage>();
     public List<GameObject> HeroesUnlocked = new List<GameObject>();
@@ -111,6 +112,8 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        audioSource= GetComponent<AudioSource>();
+
         if (instance == null)
             instance = this;
         else if (instance != this)

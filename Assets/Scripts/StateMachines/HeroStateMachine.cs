@@ -800,4 +800,10 @@ public class HeroStatemachine : MonoBehaviour
             hero.baseEnergy += 10;
         }
     }
+
+    public void HitSound()
+    {
+        GameManager.instance.audioSource.PlayOneShot(CSM.attackSound);
+    }
+
 }

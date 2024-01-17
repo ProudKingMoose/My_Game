@@ -45,6 +45,9 @@ public class CombatStateMachine : MonoBehaviour
 
     private GameObject FSPanel;
 
+    [Header("Combat Sounds")]
+    public AudioClip attackSound;
+
     public enum HeroGUI
     {
         ACTIVATE,
