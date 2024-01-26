@@ -74,7 +74,7 @@ public class PauseMenu : MonoBehaviour//FIX UI PROBLEMS WHERE THE HERO IN TEAM P
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             if (IsPaused)
                 ExitUI();

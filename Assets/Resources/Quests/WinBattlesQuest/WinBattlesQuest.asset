@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ae2a38939cb7d449b409bc4235d25c9, type: 3}
+  m_Name: WinBattlesQuest
+  m_EditorClassIdentifier: 
+  <Id>k__BackingField: WinBattlesQuest
+  title: Win Battles
+  levelRequirement: 0
+  questPrerequisites: []
+  QuestStepPrerfabs:
+  - {fileID: 4537547367647460483, guid: 747745b93a75a2649b28b20ed45d0198, type: 3}
+  coins: 100
+  Xp: 200
+  Items:
+  - {fileID: 11400000, guid: ab448529ba2897f4b90f052916b18f09, type: 2}

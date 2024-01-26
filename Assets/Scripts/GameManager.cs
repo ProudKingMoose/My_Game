@@ -1,4 +1,5 @@
 using Mono.Cecil.Cil;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SearchService;
@@ -40,6 +41,12 @@ public class GameManager : MonoBehaviour
     public List<HeroStatStorage> StatStorage = new List<HeroStatStorage>();
     public List<GameObject> HeroesUnlocked = new List<GameObject>();
 
+    [Header("Events")]
+    public QuestEvents questEvents;
+    public event Action OnBattleWon;
+    public event Action StartQuest;
+    public event Action<int> LevelChange;
+
     public enum Gamestates
     {
         OverWorld,
@@ -64,12 +71,15 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.U))
-            inventory.AddItems(item1[Random.Range(0, item1.Count - 1)], 1);
+            inventory.AddItems(item1[UnityEngine.Random.Range(0, item1.Count - 1)], 1);
         if (Input.GetKeyDown(KeyCode.I))
             inventory.AddItems(item2, 2);
+        if (Input.GetKeyDown(KeyCode.P))
+            startQuestClicked();
 
 
-        switch (state)
+
+            switch (state)
         {
             case Gamestates.OverWorld:
                 if (isWalking)
@@ -112,7 +122,10 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        audioSource= GetComponent<AudioSource>();
+
+        audioSource = GetComponent<AudioSource>();
+
+        questEvents = new QuestEvents();
 
         if (instance == null)
             instance = this;
@@ -220,20 +233,50 @@ public class GameManager : MonoBehaviour
     void Encounter()
     {
         if (isWalking && encounterPosible && PartyCheck())
-            if (Random.Range(0, 5000) < 5)
+            if (UnityEngine.Random.Range(0, 5000) < 5)
             {
                 Debug.Log("ATTACKED");
                 attacked = true;
             }
     }
 
+    public void BattleWon()
+    {
+        if (OnBattleWon != null)
+            OnBattleWon();
+    }
+
+    public void startQuestClicked()
+    {
+        if (StartQuest != null)
+            StartQuest();
+    }
+
+    public void HeroLevelCheck(int level)
+    {
+        if (LevelChange != null)
+            LevelChange(level);
+    }
+
+    public void CheckHighestLevel()
+    {
+        int highestlevel = 0;
+
+        foreach (HeroStatStorage hero in StatStorage)
+        {
+            if (highestlevel < hero.level)
+                highestlevel = hero.level;
+        }
+        HeroLevelCheck(highestlevel);
+    }
+
     void BattleStart()
     {
-        amountOfEnemies = Random.Range(1, currentRegion.maxAmountOfEnemies);
+        amountOfEnemies = UnityEngine.Random.Range(1, currentRegion.maxAmountOfEnemies);
 
         for (int i = 0; i < amountOfEnemies; i++)
         {
-            enemiesToBattle.Add(currentRegion.enemies[Random.Range(1, currentRegion.enemies.Count)]);
+            enemiesToBattle.Add(currentRegion.enemies[UnityEngine.Random.Range(1, currentRegion.enemies.Count)]);
         }
 
         lastHeroPosition = GameObject.Find("Player").gameObject.transform.position;

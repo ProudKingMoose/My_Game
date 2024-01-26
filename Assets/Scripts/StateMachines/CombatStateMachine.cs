@@ -402,6 +402,8 @@ public class CombatStateMachine : MonoBehaviour
             Heroes[i].GetComponent<HeroStatemachine>().currentstate = HeroStatemachine.States.WAITING;
         }
         SaveStats();
+        GameManager.instance.CheckHighestLevel();
+        GameManager.instance.BattleWon();
         GameManager.instance.LoadSceneAfterBattle();
         GameManager.instance.state = GameManager.Gamestates.OverWorld;
         GameManager.instance.enemiesToBattle.Clear();
