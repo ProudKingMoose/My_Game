@@ -159,11 +159,13 @@ public class HeroStatemachine : MonoBehaviour
             break;
 
             case (States.ATTACKING):
-                StartCoroutine(HeroMeleeAttack());
+                if (CSM.battleState != CombatStateMachine.Action.WIN)
+                    StartCoroutine(HeroMeleeAttack());
             break;
 
             case (States.ENERGYATTACK):
-                StartCoroutine(HeroEnergyAttack());
+                if (CSM.battleState != CombatStateMachine.Action.WIN)
+                    StartCoroutine(HeroEnergyAttack());
                 break;
 
             case (States.FUSING):

@@ -12,7 +12,7 @@ public class QuestPoint : MonoBehaviour
     [SerializeField] private bool finishPoint = true;
 
     public bool selected = false;
-    public bool started = false;
+    public bool canFinish = false;
     private string questId;
     private QuestState currentQuestState;
 

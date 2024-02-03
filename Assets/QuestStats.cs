@@ -7,7 +7,6 @@ public class QuestStats : MonoBehaviour
 {
     public Quest quest;
     public GameObject QuestManager;
-    public GameObject MoreInfoPanel;
 
     public void SelectQuest()
     {
@@ -15,9 +14,23 @@ public class QuestStats : MonoBehaviour
         {
             if (mission.name == quest.info.name)
             {
+                Debug.Log("This is clicked");
                 mission.GetComponent<QuestPoint>().selected = true;
-                Text Title = MoreInfoPanel.transform.Find("MissionName").GetComponent<Text>();
-                Title.text = quest.info.name;
+            }
+            else
+            {
+                mission.GetComponent<QuestPoint>().selected = false;
+            }
+        }
+    }
+    public void EndQuest()
+    {
+        foreach (Transform mission in QuestManager.transform)
+        {
+            if (mission.name == quest.info.name && quest.state == QuestState.CAN_FINISH)
+            {
+                Debug.Log("This is clicked");
+                mission.GetComponent<QuestPoint>().selected = true;
             }
         }
     }

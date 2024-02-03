@@ -17,7 +17,7 @@ public abstract class QuestStep : MonoBehaviour
         if (!isFinished)
         {
             isFinished = true;
-
+            Debug.Log("This Is Fired");
             //Advance Quest
             GameManager.instance.questEvents.AdvanceQuest(questId);
 

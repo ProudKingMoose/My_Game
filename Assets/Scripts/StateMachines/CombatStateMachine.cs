@@ -210,7 +210,7 @@ public class CombatStateMachine : MonoBehaviour
                 Debug.Log("YOU LOSE");
             break;
             case (Action.WIN):
-                Debug.Log("YOU WIN");
+                HandlerList.Clear();
                 if (FightWon())
                     ChangeScene();
 

@@ -11,6 +11,8 @@ public class QuestManager : MonoBehaviour
 
     private static QuestManager ThisGameObject;
 
+    public static List<Quest> QuestsThatCanFinish = new List<Quest>();
+
     public GameObject QuestNote;
     public Transform MissionSpacer;
 
@@ -23,6 +25,7 @@ public class QuestManager : MonoBehaviour
             Destroy(gameObject);
         DontDestroyOnLoad(gameObject);
     }
+
 
     private void OnEnable()
     {
@@ -98,7 +101,6 @@ public class QuestManager : MonoBehaviour
         Quest quest = GetQuestById(id);
         quest.InstantiatecurrentQuestStep(this.transform);
         ChangeQuestState(quest.info.Id, QuestState.IN_PROGRESS);
-        //change quest state to qesut under progress
     }
 
     private void AdvanceQuest(string id)
@@ -113,6 +115,15 @@ public class QuestManager : MonoBehaviour
         else
         {
             ChangeQuestState(quest.info.Id, QuestState.CAN_FINISH);
+            QuestsThatCanFinish.Add(quest);
+            Debug.Log("Quest has been added to quests that can be finished");
+            foreach (Transform mission in this.transform)
+            {
+                if (mission.name == quest.info.title)
+                {
+                    mission.GetComponent<QuestPoint>().canFinish = true;
+                }
+            }
         }
     }
 
@@ -131,7 +142,7 @@ public class QuestManager : MonoBehaviour
         GameManager.instance.inventory.AddItems(quest.info.Items[0], 1);
         foreach (HeroStatStorage hero in GameManager.instance.StatStorage)
         {
-            LevelSystem levelsystem;
+            //LevelSystem levelsystem;
             //Take the LevelSystem from each hero also
         }
     }
