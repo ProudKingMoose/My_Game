@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,8 @@ public class QuestStats : MonoBehaviour
     {
         foreach (Transform mission in QuestManager.transform)
         {
+            Debug.Log(mission.name);
+            Debug.Log(quest.info.name);
             if (mission.name == quest.info.name)
             {
                 Debug.Log("This is clicked");

@@ -795,7 +795,7 @@ public class HeroStatemachine : MonoBehaviour
             hero.baseDefence += 1;
             hero.baseHP += 20;
         }
-        if(hero.Level.currentLV%2 != 0)
+        if(hero.Level.currentLV % 2 != 0)
         {
             hero.baseEAttackPower += 1;
             hero.baseEDefence += 1;

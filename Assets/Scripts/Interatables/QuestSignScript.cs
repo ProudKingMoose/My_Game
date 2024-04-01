@@ -53,7 +53,6 @@ public class QuestSignScript : MonoBehaviour, IInteractable
         Item.text = quest.info.Items[0].ToString();
         QuestStats stats = note.GetComponent<QuestStats>();
         stats.quest = quest;
-        stats.QuestManager = this.gameObject;
 
         note.transform.SetParent(MissionSpacer, false);
     }

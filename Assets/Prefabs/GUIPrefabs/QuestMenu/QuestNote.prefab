@@ -252,8 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90971c5d59f5e274cb1231b92b621f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  QuestManager: {fileID: 0}
-  MoreInfoPanel: {fileID: 5242458437369564609, guid: a9cdc5eadb1da6944af34c50729860b3,
+  QuestManager: {fileID: 18896957461577677, guid: 2ead872d9599b1d4fa3eba698be39467,
     type: 3}
 --- !u!114 &7085836254270979400
 MonoBehaviour:
